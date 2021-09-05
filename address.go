@@ -148,3 +148,5 @@ func (c *Client) GetXpub(crypto string, extendedKey string) (*DataXpub, error) {
 	}
 	return rsp, e
 }
+
+// TODO! Add support for Ethereum

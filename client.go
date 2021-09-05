@@ -9,11 +9,26 @@ import (
 
 const (
 	apiRoot = "https://api.blockchair.com/"
+	Hash = "^0x[0-9a-f]{64}$"
 )
 
-//func getSupportedCrypto() []string {
-//	return []string{"bitcoin", "bitcoin-cash", "litecoin", "bitcoin-sv", "dogecoin", "dash", "groestlcoin", "zcash", "ecash", "ethereum"}
-//}
+func Contains(slice []string, item string) bool {
+	set := make(map[string]struct{}, len(slice))
+	for _, s := range slice {
+		set[s] = struct{}{}
+	}
+
+	_, ok := set[item]
+	return ok
+}
+
+func GetSupportedCrypto() []string {
+	return []string{"bitcoin", "bitcoin-cash", "litecoin", "bitcoin-sv", "dogecoin", "dash", "groestlcoin", "zcash", "ecash", "bitcoin/testnet"}
+}
+
+func GetSupportedCryptoEth() []string {
+	return []string{"ethereum/testnet", "ethereum"}
+}
 
 type Client struct {
 	*http.Client

@@ -2,6 +2,7 @@ package blockchair
 
 import (
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -147,6 +148,9 @@ type Api struct {
 
 
 func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
+	if !Contains(GetSupportedCrypto(), crypto){
+		log.Fatalf("error: %v is not supported",crypto)
+	}
 	rsp := &DataBlock{}
 
 	var path = crypto + "/dashboards/block/" + blockID
@@ -159,6 +163,9 @@ func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
 }
 
 func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlocks, error) {
+	if !Contains(GetSupportedCrypto(), crypto){
+		log.Fatalf("error: %v is not supported",crypto)
+	}
 	rsp := &DataBlocks{}
 	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
 	e := c.loadResponse(path, rsp)
@@ -170,6 +177,9 @@ func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlocks, error
 }
 
 func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, error) {
+	if !Contains(GetSupportedCryptoEth(), crypto){
+		log.Fatalf("error: %v is not supported",crypto)
+	}
 	rsp := &DataBlockEth{}
 
 	var path = crypto + "/dashboards/block/" + blockID
@@ -182,6 +192,9 @@ func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, erro
 }
 
 func (c *Client) GetBlocksEth(crypto string, blockIDs []string) (*DataBlockEth, error) {
+	if !Contains(GetSupportedCryptoEth(), crypto){
+		log.Fatalf("error: %v is not supported",crypto)
+	}
 	rsp := &DataBlockEth{}
 	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
 	e := c.loadResponse(path, rsp)

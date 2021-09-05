@@ -1,6 +1,7 @@
 package blockchair
 
 import (
+	"encoding/json"
 	"testing"
 )
 
@@ -96,4 +97,25 @@ func TestGetBlocksEth(t *testing.T) {
 			}
 		})
 	}
+}
+
+func BenchmarkGetBlockUnmarshal(b *testing.B) {
+	cl, _ := New()
+	response, e := cl.GetBlock("bitcoin","0000000000000000000325cfc4640cf0f2bb0842e139dca758afa4d740ee27c1")
+	if e != nil {
+		b.Fatal(e)
+	}
+
+	bytes, e := json.Marshal(response)
+	if e != nil {
+		b.Fatal(e)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		e := json.Unmarshal(bytes, response)
+		if e != nil {
+			b.Fatal(e)
+		}
+	}
+	b.StopTimer()
 }
