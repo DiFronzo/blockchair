@@ -6,22 +6,22 @@ import (
 )
 
 type DataBlock struct {
-	Data       *DataInfo `json:"data"`
-	Context    *Context    `json:"context"`
+	Data       []DataInfo `json:"data"`
+	Context    Context    `json:"context"`
 }
 
 type DataBlocks struct {
-	Data       []*DataInfo `json:"data"`
-	Context    *Context    `json:"context"`
+	Data       map[string]DataInfo `json:"data"`
+	Context    Context    `json:"context"`
 }
 
 type DataInfo struct {
-	Block       	*Block   `json:"block"`
+	Block       	Block   `json:"block"`
 	Transactions	[]string `json:"transactions"`
 }
 
 type Block struct {
-	Id       	  	int    `json:"id"`
+	ID       	  	int    `json:"id"`
 	Hash          	string `json:"hash"`
 	Date          	string `json:"date"`
 	Time  		  	string `json:"time"`
@@ -45,7 +45,7 @@ type Block struct {
 	InputTotal int `json:"input_total"`
 	InputTotalUsd int `json:"input_total_usd"`
 	OutputTotal int `json:"output_total"`
-	OutputTotalUsd int `json:"output_total_usd"`
+	OutputTotalUsd float32 `json:"output_total_usd"`
 	FeeTotal int `json:"fee_total"`
 	FeeTotalUsd int `json:"fee_total_usd"`
 	FeePerKb int `json:"fee_per_kb"`
@@ -54,9 +54,9 @@ type Block struct {
 	FeePerKwuUsd int `json:"fee_per_kwu_usd"`
 	CddTotal int `json:"cdd_total"`
 	Generation int `json:"generation"`
-	GenerationUsd int `json:"generation_usd"`
+	GenerationUsd float32 `json:"generation_usd"`
 	Reward int `json:"reward"`
-	RewardUsd int  `json:"reward_usd"`
+	RewardUsd float32  `json:"reward_usd"`
 	GuessedMiner string `json:"guessed_miner"`
 }
 
@@ -69,7 +69,7 @@ type Context struct {
 	State           int    `json:"state"`
 	MarketPriceUsd  int      `json:"market_price_usd"`
 	Cache			*Cache  `json:"cache"`
-	Api				*Api  `json:"api"`
+	API				*Api  `json:"api"`
 	Server			string `json:"server"`
 	Time			float32    `json:"time"`
 	RenderTime		float32    `json:"render_time"`

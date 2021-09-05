@@ -38,7 +38,11 @@ func (c *Client) loadResponse(path string, i interface{}) error {
 		return fmt.Errorf("expected status 2xx, got %s: %s", rsp.Status, string(b))
 	}
 
-	return json.Unmarshal(b, &i)
+	err := json.Unmarshal(b, &i)
+	if err != nil {
+		fmt.Printf("Error parsing JSON string - %s", err)
+	}
+	return err
 }
 
 func New() (*Client, error) {
