@@ -83,9 +83,9 @@ type Address struct {
 	UnspentOutputCount int         `json:"unspent_output_count"`
 	FirstSeenReceiving string      `json:"first_seen_receiving"`
 	LastSeenReceiving  string      `json:"last_seen_receiving"`
-	FirstSeenSpending  interface{} `json:"first_seen_spending"`
-	LastSeenSpending   interface{} `json:"last_seen_spending"`
-	ScripthashType     interface{} `json:"scripthash_type"`
+	FirstSeenSpending  string 	   `json:"first_seen_spending"`
+	LastSeenSpending   string	   `json:"last_seen_spending"`
+	ScripthashType     string	   `json:"scripthash_type"`
 	TransactionCount   int         `json:"transaction_count"`
 }
 
