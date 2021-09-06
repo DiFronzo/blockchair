@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="./misc/BC_api.svg" width="300px"/><br/>
+  <img src="./misc/BC_api.svg" width="700px"/><br/>
    Blockchair API
 </h1>
 <p align="center">Client for the blockchair.com API using GO.
