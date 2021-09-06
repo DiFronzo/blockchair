@@ -8,7 +8,7 @@ import (
 func TestGetTransaction(t *testing.T) {
 	tests := []struct {
 		currency string
-		tx  string
+		tx       string
 	}{
 		{"bitcoin", "ed232ffd13184a8ff682364d20d25575492fbc9f8904343308e2b68d71feda21"},
 		{"bitcoin", "ef4e4240cdca472910ba4e6d77102320cb866d378964f3e663d69fc5fbfc0cd9"},
@@ -31,7 +31,7 @@ func TestGetTransaction(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetTransaction(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -43,14 +43,14 @@ func TestGetTransaction(t *testing.T) {
 func TestGetTransactions(t *testing.T) {
 	tests := []struct {
 		currency string
-		tx  []string
+		tx       []string
 	}{
 		{"bitcoin", []string{"ed232ffd13184a8ff682364d20d25575492fbc9f8904343308e2b68d71feda21", "ef4e4240cdca472910ba4e6d77102320cb866d378964f3e663d69fc5fbfc0cd9"}},
 		{"bitcoin-cash", []string{"263d4198ef627d582b8b96e0d4f58f8eea77e9e2393539afd30e696af1500c8e", "96fb4ea992bd6bf086d7ac8cee07ee6c261aaf65570b6bc64288b57debd0e13c"}},
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetTransactions(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -62,7 +62,7 @@ func TestGetTransactions(t *testing.T) {
 func TestGetTransactionEth(t *testing.T) {
 	tests := []struct {
 		currency string
-		tx  string
+		tx       string
 	}{
 		{"ethereum", "0xb8e130ee4f809e495c91e2bbc071e7f18ba7ec5a15b33b7ea6243c9ab8f89bee"},
 		{"ethereum", "0x9c6a8ca391990a5da03f200a62e8338020b8783d94b21ba8beccbf81f6e6d1f3"},
@@ -71,7 +71,7 @@ func TestGetTransactionEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetTransactionEth(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -83,14 +83,14 @@ func TestGetTransactionEth(t *testing.T) {
 func TestGetTransactionsEth(t *testing.T) {
 	tests := []struct {
 		currency string
-		tx  []string
+		tx       []string
 	}{
 		{"ethereum", []string{"0xb8e130ee4f809e495c91e2bbc071e7f18ba7ec5a15b33b7ea6243c9ab8f89bee", "0x9c6a8ca391990a5da03f200a62e8338020b8783d94b21ba8beccbf81f6e6d1f3"}},
 		{"ethereum", []string{"0x3e6db7f8a4f73114da2281a070e02bfa11412fb11fa512ab2e075d722498e932", "0x9d04edc6f05b8366613fa484ad16976b8b23aae73083d60dae81f95624619f12"}},
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetTransactionsEth(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -100,8 +100,8 @@ func TestGetTransactionsEth(t *testing.T) {
 }
 
 func BenchmarkGetTransactionUnmarshal(b *testing.B) {
-	cl, _ := New()
-	response, e := cl.GetTransaction("bitcoin","ed232ffd13184a8ff682364d20d25575492fbc9f8904343308e2b68d71feda21")
+	cl, _ := New(clientID)
+	response, e := cl.GetTransaction("bitcoin", "ed232ffd13184a8ff682364d20d25575492fbc9f8904343308e2b68d71feda21")
 	if e != nil {
 		b.Fatal(e)
 	}

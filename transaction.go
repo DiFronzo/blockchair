@@ -8,80 +8,80 @@ import (
 )
 
 type DataTransaction struct {
-	Data	map[string]TransactionInfo	`json:"data"`
-	Context    *Context    `json:"context"`
+	Data    map[string]TransactionInfo `json:"data"`
+	Context *Context                   `json:"context"`
 }
 
 type DataTransactionEth struct {
-	Data	map[string]TransactionInfoEth	`json:"data"`
-	Context    ContextEth    `json:"context"`
+	Data    map[string]TransactionInfoEth `json:"data"`
+	Context ContextEth                    `json:"context"`
 }
 
 type TransactionInfo struct {
-	Transaction		Transaction	`json:"transaction"`
-	Inputs	[]interface{}	`json:"inputs"`
-	Outputs []Outputs	`json:"outputs"`
+	Transaction Transaction   `json:"transaction"`
+	Inputs      []interface{} `json:"inputs"`
+	Outputs     []Outputs     `json:"outputs"`
 }
 
 type TransactionInfoEth struct {
-	Transaction		TransactionEth	`json:"transaction"`
-	Calls []Calls	`json:"calls"`
+	Transaction TransactionEth `json:"transaction"`
+	Calls       []Calls        `json:"calls"`
 }
 
 type TransactionEth struct {
-	BlockID              int         `json:"block_id"`
-	ID                   int64       `json:"id"`
-	Index                int         `json:"index"`
-	Hash                 string      `json:"hash"`
-	Date                 string      `json:"date"`
-	Time                 string      `json:"time"`
-	Failed               bool        `json:"failed"`
-	Type                 string      `json:"type"`
-	Sender               string      `json:"sender"`
-	Recipient            string      `json:"recipient"`
-	CallCount            int         `json:"call_count"`
-	Value                string      `json:"value"`
-	ValueUsd             float64     `json:"value_usd"`
-	InternalValue        string      `json:"internal_value"`
-	InternalValueUsd     float64     `json:"internal_value_usd"`
-	Fee                  string      `json:"fee"`
-	FeeUsd               float64     `json:"fee_usd"`
-	GasUsed              int         `json:"gas_used"`
-	GasLimit             int         `json:"gas_limit"`
-	GasPrice             int64       `json:"gas_price"`
-	InputHex             string      `json:"input_hex"`
-	Nonce                int         `json:"nonce"`
-	V                    string      `json:"v"`
-	R                    string      `json:"r"`
-	S                    string      `json:"s"`
-	Version              int 		 `json:"version"`
-	EffectiveGasPrice    float32	 `json:"effective_gas_price"`
-	MaxFeePerGas         float32	 `json:"max_fee_per_gas"`
-	MaxPriorityFeePerGas float32	 `json:"max_priority_fee_per_gas"`
-	BaseFeePerGas        float32	 `json:"base_fee_per_gas"`
-	Burned               string      `json:"burned"`
-	Type2718             interface{} `json:"type_2718"` //??
+	BlockID              int     `json:"block_id"`
+	ID                   int64   `json:"id"`
+	Index                int     `json:"index"`
+	Hash                 string  `json:"hash"`
+	Date                 string  `json:"date"`
+	Time                 string  `json:"time"`
+	Failed               bool    `json:"failed"`
+	Type                 string  `json:"type"`
+	Sender               string  `json:"sender"`
+	Recipient            string  `json:"recipient"`
+	CallCount            int     `json:"call_count"`
+	Value                string  `json:"value"`
+	ValueUsd             float64 `json:"value_usd"`
+	InternalValue        string  `json:"internal_value"`
+	InternalValueUsd     float64 `json:"internal_value_usd"`
+	Fee                  string  `json:"fee"`
+	FeeUsd               float64 `json:"fee_usd"`
+	GasUsed              int     `json:"gas_used"`
+	GasLimit             int     `json:"gas_limit"`
+	GasPrice             int64   `json:"gas_price"`
+	InputHex             string  `json:"input_hex"`
+	Nonce                int     `json:"nonce"`
+	V                    string  `json:"v"`
+	R                    string  `json:"r"`
+	S                    string  `json:"s"`
+	Version              int     `json:"version"`
+	EffectiveGasPrice    float32 `json:"effective_gas_price"`
+	MaxFeePerGas         float32 `json:"max_fee_per_gas"`
+	MaxPriorityFeePerGas float32 `json:"max_priority_fee_per_gas"`
+	BaseFeePerGas        float32 `json:"base_fee_per_gas"`
+	Burned               string  `json:"burned"`
+	Type2718             bool    `json:"type_2718"` //??
 }
 
 type Calls struct {
-	BlockID         int         `json:"block_id"`
-	TransactionID   int64       `json:"transaction_id"`
-	TransactionHash string      `json:"transaction_hash"`
-	Index           string      `json:"index"`
-	Depth           int         `json:"depth"`
-	Date            string      `json:"date"`
-	Time            string      `json:"time"`
-	Failed          bool        `json:"failed"`
-	FailReason      string	    `json:"fail_reason"`
-	Type            string      `json:"type"`
-	Sender          string      `json:"sender"`
-	Recipient       string      `json:"recipient"`
-	ChildCallCount  int         `json:"child_call_count"`
-	Value           string      `json:"value"`
-	ValueUsd        float64         `json:"value_usd"`
-	Transferred     bool        `json:"transferred"`
-	InputHex        string      `json:"input_hex"`
-	OutputHex       string      `json:"output_hex"`
+	BlockID         int     `json:"block_id"`
+	TransactionID   int64   `json:"transaction_id"`
+	TransactionHash string  `json:"transaction_hash"`
+	Index           string  `json:"index"`
+	Depth           int     `json:"depth"`
+	Date            string  `json:"date"`
+	Time            string  `json:"time"`
+	Failed          bool    `json:"failed"`
+	FailReason      string  `json:"fail_reason"`
+	Type            string  `json:"type"`
+	Sender          string  `json:"sender"`
+	Recipient       string  `json:"recipient"`
+	ChildCallCount  int     `json:"child_call_count"`
+	Value           string  `json:"value"`
+	ValueUsd        float64 `json:"value_usd"`
+	Transferred     bool    `json:"transferred"`
+	InputHex        string  `json:"input_hex"`
+	OutputHex       string  `json:"output_hex"`
 }
 
 type Transaction struct {
@@ -99,16 +99,16 @@ type Transaction struct {
 	InputCount     int     `json:"input_count"`
 	OutputCount    int     `json:"output_count"`
 	InputTotal     int     `json:"input_total"`
-	InputTotalUsd  float32     `json:"input_total_usd"`
+	InputTotalUsd  float32 `json:"input_total_usd"`
 	OutputTotal    int64   `json:"output_total"`
 	OutputTotalUsd float32 `json:"output_total_usd"`
 	Fee            int     `json:"fee"`
-	FeeUsd         float32     `json:"fee_usd"`
-	FeePerKb       float32     `json:"fee_per_kb"`
-	FeePerKbUsd    float32     `json:"fee_per_kb_usd"`
-	FeePerKwu      float32     `json:"fee_per_kwu"`
-	FeePerKwuUsd   float32     `json:"fee_per_kwu_usd"`
-	CddTotal       float32     `json:"cdd_total"`
+	FeeUsd         float32 `json:"fee_usd"`
+	FeePerKb       float32 `json:"fee_per_kb"`
+	FeePerKbUsd    float32 `json:"fee_per_kb_usd"`
+	FeePerKwu      float32 `json:"fee_per_kwu"`
+	FeePerKwuUsd   float32 `json:"fee_per_kwu_usd"`
+	CddTotal       float32 `json:"cdd_total"`
 	IsRbf          bool    `json:"is_rbf"`
 }
 
@@ -177,8 +177,8 @@ type ContextEth struct {
 	State          int     `json:"state"`
 	StateLayer2    int     `json:"state_layer_2"`
 	MarketPriceUsd float64 `json:"market_price_usd"`
-	Cache          *Cache   `json:"cache"`
-	API            *Api     `json:"api"`
+	Cache          *Cache  `json:"cache"`
+	API            *Api    `json:"api"`
 	Server         string  `json:"server"`
 	Time           float64 `json:"time"`
 	RenderTime     float64 `json:"render_time"`
@@ -187,8 +187,8 @@ type ContextEth struct {
 }
 
 func (c *Client) GetTransaction(crypto string, TxID string) (*DataTransaction, error) {
-	if !Contains(GetSupportedCrypto(), crypto){
-		log.Fatalf("error: %v is not supported",crypto)
+	if !Contains(GetSupportedCrypto(), crypto) {
+		log.Fatalf("error: %v is not supported", crypto)
 	}
 	rsp := &DataTransaction{}
 	var path = crypto + "/dashboards/transaction/" + TxID
@@ -201,12 +201,12 @@ func (c *Client) GetTransaction(crypto string, TxID string) (*DataTransaction, e
 }
 
 func (c *Client) GetTransactionEth(crypto string, TxID string) (*DataTransactionEth, error) {
-	if !Contains(GetSupportedCryptoEth(), crypto){
-		log.Fatalf("error: %v is not supported",crypto)
+	if !Contains(GetSupportedCryptoEth(), crypto) {
+		log.Fatalf("error: %v is not supported", crypto)
 	}
 	r, _ := regexp.Compile(Hash)
 	if !r.MatchString(TxID) {
-		log.Fatalf("error: %v is not a valid hash",TxID)
+		log.Fatalf("error: %v is not a valid hash", TxID)
 	}
 
 	rsp := &DataTransactionEth{}
@@ -220,8 +220,8 @@ func (c *Client) GetTransactionEth(crypto string, TxID string) (*DataTransaction
 }
 
 func (c *Client) GetTransactions(crypto string, TxIDs []string) (*DataTransaction, error) {
-	if !Contains(GetSupportedCrypto(), crypto){
-		log.Fatalf("error: %v is not supported",crypto)
+	if !Contains(GetSupportedCrypto(), crypto) {
+		log.Fatalf("error: %v is not supported", crypto)
 	}
 	rsp := &DataTransaction{}
 	var path = crypto + "/dashboards/transactions/" + strings.Join(TxIDs, ",")
@@ -234,13 +234,13 @@ func (c *Client) GetTransactions(crypto string, TxIDs []string) (*DataTransactio
 }
 
 func (c *Client) GetTransactionsEth(crypto string, TxIDs []string) (*DataTransactionEth, error) {
-	if !Contains(GetSupportedCryptoEth(), crypto){
-		log.Fatalf("error: %v is not supported",crypto)
+	if !Contains(GetSupportedCryptoEth(), crypto) {
+		log.Fatalf("error: %v is not supported", crypto)
 	}
 	r, _ := regexp.Compile(Hash)
-	for i := range TxIDs{
+	for i := range TxIDs {
 		if !r.MatchString(TxIDs[i]) {
-			log.Fatalf("error: %v is not a valid hash",TxIDs[i])
+			log.Fatalf("error: %v is not a valid hash", TxIDs[i])
 		}
 	}
 

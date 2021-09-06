@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 const (
 	apiRoot = "https://api.blockchair.com/"
-	Hash = "^0x[0-9a-f]{64}$"
+	Hash    = "^0x[0-9a-f]{64}$"
+	//UserAgent = "blockchair-api-go-v1"
 )
 
 func Contains(slice []string, item string) bool {
@@ -32,25 +34,34 @@ func GetSupportedCryptoEth() []string {
 
 type Client struct {
 	*http.Client
+	api interface{}
 }
 
 func (c *Client) loadResponse(path string, i interface{}) error {
 	fullPath := apiRoot + path
+	if c.api != nil {
+		fullPath = fullPath + "?api=" + fmt.Sprintf("%v", c.api)
+	}
 
 	fmt.Println("querying..." + fullPath)
-	rsp, e := c.Get(fullPath)
+	resp, e := c.Get(fullPath)
 	if e != nil {
-		return e
+		panic(e)
 	}
 
-	defer rsp.Body.Close()
+	defer func() {
+		err := resp.Body.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}()
 
-	b, e := ioutil.ReadAll(rsp.Body)
+	b, e := ioutil.ReadAll(resp.Body)
 	if e != nil {
-		return e
+		log.Fatal(e)
 	}
-	if rsp.Status[0] != '2' {
-		return fmt.Errorf("expected status 2xx, got %s: %s", rsp.Status, string(b))
+	if resp.Status[0] != '2' {
+		return fmt.Errorf("expected status 2xx, got %s: %s", resp.Status, string(b))
 	}
 
 	err := json.Unmarshal(b, &i)
@@ -60,6 +71,6 @@ func (c *Client) loadResponse(path string, i interface{}) error {
 	return err
 }
 
-func New() (*Client, error) {
-	return &Client{Client: &http.Client{}}, nil
+func New(k interface{}) (*Client, error) {
+	return &Client{Client: &http.Client{}, api: k}, nil
 }

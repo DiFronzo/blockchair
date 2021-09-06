@@ -31,7 +31,7 @@ func TestGetBlock(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetBlock(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -52,7 +52,7 @@ func TestGetBlockEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetBlockEth(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -71,7 +71,7 @@ func TestGetBlocks(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetBlocks(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -90,7 +90,7 @@ func TestGetBlocksEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New()
+			cl, _ := New(clientID)
 			_, e := cl.GetBlocksEth(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -100,8 +100,8 @@ func TestGetBlocksEth(t *testing.T) {
 }
 
 func BenchmarkGetBlockUnmarshal(b *testing.B) {
-	cl, _ := New()
-	response, e := cl.GetBlock("bitcoin","0000000000000000000325cfc4640cf0f2bb0842e139dca758afa4d740ee27c1")
+	cl, _ := New(clientID)
+	response, e := cl.GetBlock("bitcoin", "0000000000000000000325cfc4640cf0f2bb0842e139dca758afa4d740ee27c1")
 	if e != nil {
 		b.Fatal(e)
 	}
