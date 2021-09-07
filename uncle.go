@@ -1,7 +1,6 @@
 package blockchair
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -61,8 +60,13 @@ type ContextUncle struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
-// GetUncle Fetch an uncle block created on Ethereum
+// GetUncle fetch an uncle block created on Ethereum.
 func (c *Client) GetUncle(crypto string, hash string) (*DataUncle, error) {
+	return c.GetUncleAdv(crypto, hash, nil)
+}
+
+// GetUncleAdv fetch an uncle block created on Ethereum with options.
+func (c *Client) GetUncleAdv(crypto string, hash string, options map[string]string) (resp *DataUncle, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
@@ -71,19 +75,18 @@ func (c *Client) GetUncle(crypto string, hash string) (*DataUncle, error) {
 		log.Fatalf("error: %v is not a valid hash", hash)
 	}
 
-	rsp := &DataUncle{}
-
+	resp = &DataUncle{}
 	var path = crypto + "/dashboards/uncle/" + hash
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetUncles Fetch multiple uncle blocks created on Ethereum
+// GetUncles fetch multiple uncle blocks created on Ethereum.
 func (c *Client) GetUncles(crypto string, hashes []string) (*DataUncle, error) {
+	return c.GetUnclesAdv(crypto, hashes, nil)
+}
+
+// GetUnclesAdv fetch multiple uncle blocks created on Ethereum with options.
+func (c *Client) GetUnclesAdv(crypto string, hashes []string, options map[string]string) (resp *DataUncle, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
@@ -93,12 +96,7 @@ func (c *Client) GetUncles(crypto string, hashes []string) (*DataUncle, error) {
 			log.Fatalf("error: %v is not a valid hash", hashes[i])
 		}
 	}
-	rsp := &DataUncle{}
+	resp = &DataUncle{}
 	var path = crypto + "/dashboards/uncles/" + strings.Join(hashes, ",")
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }

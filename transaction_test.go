@@ -31,7 +31,8 @@ func TestGetTransaction(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetTransaction(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -50,7 +51,8 @@ func TestGetTransactions(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetTransactions(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -71,7 +73,8 @@ func TestGetTransactionEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetTransactionEth(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -90,7 +93,8 @@ func TestGetTransactionsEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetTransactionsEth(test.currency, test.tx)
 			if e != nil {
 				t.Fatal(e)
@@ -100,7 +104,8 @@ func TestGetTransactionsEth(t *testing.T) {
 }
 
 func BenchmarkGetTransactionUnmarshal(b *testing.B) {
-	cl, _ := New(clientID)
+	cl := New()
+	cl.APIKey = clientID
 	response, e := cl.GetTransaction("bitcoin", "ed232ffd13184a8ff682364d20d25575492fbc9f8904343308e2b68d71feda21")
 	if e != nil {
 		b.Fatal(e)

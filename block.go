@@ -1,7 +1,6 @@
 package blockchair
 
 import (
-	"fmt"
 	"log"
 	"strings"
 )
@@ -150,64 +149,65 @@ type API struct {
 	Notice          string `json:"notice"`
 }
 
-// GetBlock Fetch a Bitcoin-like block
+// GetBlock fetch a Bitcoin-like block.
 func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
+	return c.GetBlockAdv(crypto, blockID, nil)
+}
+
+// GetBlockAdv fetch a Bitcoin-like block with options.
+func (c *Client) GetBlockAdv(crypto string, blockID string, options map[string]string) (resp *DataBlock, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataBlock{}
+	resp = &DataBlock{}
 
 	var path = crypto + "/dashboards/block/" + blockID
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetBlocks Fetches multiple Bitcoin-like blocks
+// GetBlocks fetches multiple Bitcoin-like blocks.
 func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlock, error) {
+	return c.GetBlocksAdv(crypto, blockIDs, nil)
+}
+
+// GetBlocksAdv fetches multiple Bitcoin-like blocks with options
+func (c *Client) GetBlocksAdv(crypto string, blockIDs []string, options map[string]string) (resp *DataBlock, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataBlock{}
-	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
-	e := c.loadResponse(path, rsp)
 
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataBlock{}
+	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetBlockEth Fetch an Ethereum block
+// GetBlockEth fetch an Ethereum block.
 func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, error) {
+	return c.GetBlockEthAdv(crypto, blockID, nil)
+}
+
+// GetBlockEthAdv fetch an Ethereum block with options.
+func (c *Client) GetBlockEthAdv(crypto string, blockID string, options map[string]string) (resp *DataBlockEth, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataBlockEth{}
+	resp = &DataBlockEth{}
 
 	var path = crypto + "/dashboards/block/" + blockID
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetBlocksEth Fetches multiple Ethereum blocks
+// GetBlocksEth fetches multiple Ethereum blocks.
 func (c *Client) GetBlocksEth(crypto string, blockIDs []string) (*DataBlockEth, error) {
+	return c.GetBlocksEthAdv(crypto, blockIDs, nil)
+}
+
+// GetBlocksEthAdv fetches multiple Ethereum blocks with options.
+func (c *Client) GetBlocksEthAdv(crypto string, blockIDs []string, options map[string]string) (resp *DataBlockEth, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataBlockEth{}
+	resp = &DataBlockEth{}
 	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }

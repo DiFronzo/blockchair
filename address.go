@@ -1,7 +1,6 @@
 package blockchair
 
 import (
-	"fmt"
 	"log"
 	"strings"
 )
@@ -179,60 +178,62 @@ type ContextAddress struct {
 
 // GetAddress get the address by type of crypto and address hash.
 func (c *Client) GetAddress(crypto string, address string) (*DataAddress, error) {
+	return c.GetAddressAdv(crypto, address, nil)
+}
+
+// GetAddressAdv get the address by type of crypto, address hash, and options.
+func (c *Client) GetAddressAdv(crypto string, address string, options map[string]string) (resp *DataAddress, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataAddress{}
+	resp = &DataAddress{}
 	var path = crypto + "/dashboards/address/" + address
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }
 
 // GetAddresses get the addresses by type of crypto and addresses hash.
 func (c *Client) GetAddresses(crypto string, addresses []string) (*DataAddresses, error) {
+	return c.GetAddressesAdv(crypto, addresses, nil)
+}
+
+// GetAddressesAdv get the addresses by type of crypto, addresses hash and options.
+func (c *Client) GetAddressesAdv(crypto string, addresses []string, options map[string]string) (resp *DataAddresses, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataAddresses{}
-	var path = crypto + "/dashboards/addresses/" + strings.Join(addresses, ",")
-	e := c.loadResponse(path, rsp)
 
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataAddresses{}
+	var path = crypto + "/dashboards/addresses/" + strings.Join(addresses, ",")
+	return resp, c.LoadResponse(path, resp, options)
 }
 
 // GetXpub get the xpub/ypub/zpub by type of crypto and the extended key.
 // xpub (supported for all blockchains), ypub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only) and zpub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only)
 func (c *Client) GetXpub(crypto string, extendedKey string) (*DataXpub, error) {
+	return c.GetXpubAdv(crypto, extendedKey, nil)
+}
 
-	rsp := &DataXpub{}
+// GetXpubAdv get the xpub/ypub/zpub by type of crypto, the extended key, and options.
+// xpub (supported for all blockchains), ypub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only) and zpub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only)
+func (c *Client) GetXpubAdv(crypto string, extendedKey string, options map[string]string) (resp *DataXpub, e error) {
+
+	resp = &DataXpub{}
 	var path = crypto + "/dashboards/xpub/" + extendedKey
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }
 
 // GetAddressEth get the address by type of crypto and address hash for Ethereum.
 func (c *Client) GetAddressEth(crypto string, address string) (*DataAddressEth, error) {
+	return c.GetAddressEthAdv(crypto, address, nil)
+}
+
+// GetAddressEthAdv get the address by type of crypto, address hash, and options for Ethereum.
+func (c *Client) GetAddressEthAdv(crypto string, address string, options map[string]string) (resp *DataAddressEth, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
 
-	rsp := &DataAddressEth{}
+	resp = &DataAddressEth{}
 	var path = crypto + "/dashboards/address/" + address
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	return resp, c.LoadResponse(path, resp, options)
 }

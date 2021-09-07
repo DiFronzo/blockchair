@@ -3,12 +3,20 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/DiFronzo/blockchair"
 )
 
+var clientID string
+
+func init() {
+	clientID = os.Getenv("API_KEY")
+}
+
 func main() {
-	c, _ := blockchair.New(nil)
+	c := blockchair.New()
+	c.APIKey = clientID
 	resp, err := c.GetAddressEth("ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d")
 	if err != nil {
 		log.Fatalln(err)

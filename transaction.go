@@ -1,7 +1,6 @@
 package blockchair
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -196,74 +195,74 @@ type ContextEth struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
-// GetTransaction Fetches a Bitcoin-like transaction
-func (c *Client) GetTransaction(crypto string, TxID string) (*DataTransaction, error) {
+// GetTransaction fetches a Bitcoin-like transaction.
+func (c *Client) GetTransaction(crypto string, txID string) (*DataTransaction, error) {
+	return c.GetTransactionAdv(crypto, txID, nil)
+}
+
+// GetTransactionAdv fetches a Bitcoin-like transaction with options.
+func (c *Client) GetTransactionAdv(crypto string, txID string, options map[string]string) (resp *DataTransaction, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataTransaction{}
-	var path = crypto + "/dashboards/transaction/" + TxID
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataTransaction{}
+	var path = crypto + "/dashboards/transaction/" + txID
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetTransactionEth Fetches an Ethereum transaction
-func (c *Client) GetTransactionEth(crypto string, TxID string) (*DataTransactionEth, error) {
+// GetTransactionEth fetches an Ethereum transaction.
+func (c *Client) GetTransactionEth(crypto string, txID string) (*DataTransactionEth, error) {
+	return c.GetTransactionEthAdv(crypto, txID, nil)
+}
+
+// GetTransactionEthAdv fetches an Ethereum transaction with options.
+func (c *Client) GetTransactionEthAdv(crypto string, txID string, options map[string]string) (resp *DataTransactionEth, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
 	r, _ := regexp.Compile(Hash)
-	if !r.MatchString(TxID) {
-		log.Fatalf("error: %v is not a valid hash", TxID)
+	if !r.MatchString(txID) {
+		log.Fatalf("error: %v is not a valid hash", txID)
 	}
 
-	rsp := &DataTransactionEth{}
-	var path = crypto + "/dashboards/transaction/" + TxID
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataTransactionEth{}
+	var path = crypto + "/dashboards/transaction/" + txID
+	return resp, c.LoadResponse(path, resp, options)
 }
 
 // GetTransactions Fetches multiple Bitcoin-like transaction
-func (c *Client) GetTransactions(crypto string, TxIDs []string) (*DataTransaction, error) {
+func (c *Client) GetTransactions(crypto string, txIDs []string) (*DataTransaction, error) {
+	return c.GetTransactionsAdv(crypto, txIDs, nil)
+}
+
+// GetTransactionsAdv fetches multiple Bitcoin-like transaction with options
+func (c *Client) GetTransactionsAdv(crypto string, txIDs []string, options map[string]string) (resp *DataTransaction, e error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataTransaction{}
-	var path = crypto + "/dashboards/transactions/" + strings.Join(TxIDs, ",")
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataTransaction{}
+	var path = crypto + "/dashboards/transactions/" + strings.Join(txIDs, ",")
+	return resp, c.LoadResponse(path, resp, options)
 }
 
-// GetTransactionsEth Fetches multiple Ethereum transaction
-func (c *Client) GetTransactionsEth(crypto string, TxIDs []string) (*DataTransactionEth, error) {
+// GetTransactionsEth fetches multiple Ethereum transactions.
+func (c *Client) GetTransactionsEth(crypto string, txIDs []string) (*DataTransactionEth, error) {
+	return c.GetTransactionsEthAdv(crypto, txIDs, nil)
+}
+
+// GetTransactionsEthAdv fetches multiple Ethereum transactions with options.
+func (c *Client) GetTransactionsEthAdv(crypto string, txIDs []string, options map[string]string) (resp *DataTransactionEth, e error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
 	r, _ := regexp.Compile(Hash)
-	for i := range TxIDs {
-		if !r.MatchString(TxIDs[i]) {
-			log.Fatalf("error: %v is not a valid hash", TxIDs[i])
+	for i := range txIDs {
+		if !r.MatchString(txIDs[i]) {
+			log.Fatalf("error: %v is not a valid hash", txIDs[i])
 		}
 	}
 
-	rsp := &DataTransactionEth{}
-	var path = crypto + "/dashboards/transactions/" + strings.Join(TxIDs, ",")
-	e := c.loadResponse(path, rsp)
-
-	if e != nil {
-		fmt.Print(e)
-	}
-	return rsp, e
+	resp = &DataTransactionEth{}
+	var path = crypto + "/dashboards/transactions/" + strings.Join(txIDs, ",")
+	return resp, c.LoadResponse(path, resp, options)
 }
