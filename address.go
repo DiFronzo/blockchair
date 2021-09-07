@@ -6,26 +6,31 @@ import (
 	"strings"
 )
 
+// DataAddress includes full server response to address request.
 type DataAddress struct {
 	Data    map[string]AddressInfo `json:"data"`
 	Context ContextAddress         `json:"context"`
 }
 
+// DataAddressEth includes full server response to address request for Ethereum.
 type DataAddressEth struct {
 	Data    map[string]AddressInfoEth `json:"data"`
 	Context ContextAddress            `json:"context"`
 }
 
+// DataAddresses includes full server response to addresses request.
 type DataAddresses struct {
 	Data    AddressesInfo  `json:"data"`
 	Context ContextAddress `json:"context"`
 }
 
+// DataXpub includes full server response to xpub request.
 type DataXpub struct {
 	Data    map[string]XpubInfo `json:"data"`
 	Context ContextAddress      `json:"context"`
 }
 
+// XpubInfo describes the outer structure of the x/z/v-pub.
 type XpubInfo struct {
 	Xpub         Xpub               `json:"xpub"`
 	Addresses    map[string]Address `json:"addresses"`
@@ -33,6 +38,7 @@ type XpubInfo struct {
 	Utxo         []Utxo             `json:"utxo"`
 }
 
+// Xpub describes the inner structure of the x/z/v-pub.
 type Xpub struct {
 	AddressCount       int     `json:"address_count"`
 	Balance            int     `json:"balance"`
@@ -48,6 +54,7 @@ type Xpub struct {
 	TransactionCount   int     `json:"transaction_count"`
 }
 
+// AddressesInfo describes the outer structure of the addresses.
 type AddressesInfo struct {
 	Set          Set                `json:"set"`
 	Addresses    map[string]Address `json:"addresses"`
@@ -55,11 +62,13 @@ type AddressesInfo struct {
 	Utxo         []Utxo             `json:"utxo"`
 }
 
+// AddressInfoEth the structure of the set of address and calls for Ethereum.
 type AddressInfoEth struct {
 	Address AddressEth     `json:"address"`
 	Calls   []CallsAddress `json:"calls"`
 }
 
+// Set the structure of the set for Bitcoin-like address.
 type Set struct {
 	AddressCount       int     `json:"address_count"`
 	Balance            int64   `json:"balance"`
@@ -75,12 +84,14 @@ type Set struct {
 	TransactionCount   int     `json:"transaction_count"`
 }
 
+// AddressInfo structure of the set of address, transactions, and utxo.
 type AddressInfo struct {
 	Address      Address  `json:"address"`
 	Transactions []string `json:"transactions"`
 	Utxo         []Utxo   `json:"utxo"`
 }
 
+// AddressEth is the structure of one specific Ethereum address.
 type AddressEth struct {
 	Type                string  `json:"type"`
 	ContractCodeHex     string  `json:"contract_code_hex"`
@@ -105,6 +116,7 @@ type AddressEth struct {
 	Nonce               int     `json:"nonce"`
 }
 
+// Address the structure of one specific Bitcoin-like address.
 type Address struct {
 	Type               string  `json:"type"`
 	ScriptHex          string  `json:"script_hex"`
@@ -124,6 +136,7 @@ type Address struct {
 	TransactionCount   int     `json:"transaction_count"`
 }
 
+// Utxo the structure of utxo.
 type Utxo struct {
 	BlockID         int    `json:"block_id"`
 	TransactionHash string `json:"transaction_hash"`
@@ -131,6 +144,7 @@ type Utxo struct {
 	Value           int    `json:"value"`
 }
 
+// CallsAddress is the structures of calls.
 type CallsAddress struct {
 	BlockID         int     `json:"block_id"`
 	TransactionHash string  `json:"transaction_hash"`
@@ -144,6 +158,7 @@ type CallsAddress struct {
 }
 
 // ContextAddress TODO! FIX "CHECKED" INTO A SLICE
+// the structure of context for address(es).
 type ContextAddress struct {
 	Code           int      `json:"code"`
 	Source         string   `json:"source"`
@@ -154,7 +169,7 @@ type ContextAddress struct {
 	State          int      `json:"state"`
 	MarketPriceUsd float32  `json:"market_price_usd"`
 	Cache          *Cache   `json:"cache"`
-	API            *Api     `json:"api"`
+	API            *API     `json:"api"`
 	Server         string   `json:"server"`
 	Time           float32  `json:"time"`
 	RenderTime     float32  `json:"render_time"`
@@ -162,6 +177,7 @@ type ContextAddress struct {
 	RequestCost    float32  `json:"request_cost"`
 }
 
+// GetAddress get the address by type of crypto and address hash.
 func (c *Client) GetAddress(crypto string, address string) (*DataAddress, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -176,6 +192,7 @@ func (c *Client) GetAddress(crypto string, address string) (*DataAddress, error)
 	return rsp, e
 }
 
+// GetAddresses get the addresses by type of crypto and addresses hash.
 func (c *Client) GetAddresses(crypto string, addresses []string) (*DataAddresses, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -190,9 +207,10 @@ func (c *Client) GetAddresses(crypto string, addresses []string) (*DataAddresses
 	return rsp, e
 }
 
+// GetXpub get the xpub/ypub/zpub by type of crypto and the extended key.
+// xpub (supported for all blockchains), ypub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only) and zpub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only)
 func (c *Client) GetXpub(crypto string, extendedKey string) (*DataXpub, error) {
-	// xpub (supported for all blockchains), ypub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only)
-	// zpub (supported for Bitcoin, Litecoin, Groestlcoin, and Bitcoin Testnet only)
+
 	rsp := &DataXpub{}
 	var path = crypto + "/dashboards/xpub/" + extendedKey
 	e := c.loadResponse(path, rsp)
@@ -203,6 +221,7 @@ func (c *Client) GetXpub(crypto string, extendedKey string) (*DataXpub, error) {
 	return rsp, e
 }
 
+// GetAddressEth get the address by type of crypto and address hash for Ethereum.
 func (c *Client) GetAddressEth(crypto string, address string) (*DataAddressEth, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)

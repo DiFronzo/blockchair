@@ -6,33 +6,33 @@ import (
 	"strings"
 )
 
+// DataBlock includes full server response to block request.
 type DataBlock struct {
 	Data    map[string]DataInfo `json:"data"`
 	Context Context             `json:"context"`
 }
 
+// DataBlockEth includes full server response to block request for Ethereum.
 type DataBlockEth struct {
 	Data    map[string]DataInfoEth `json:"data"`
 	Context Context                `json:"context"`
 }
 
-type DataBlocks struct {
-	Data    map[string]DataInfo `json:"data"`
-	Context Context             `json:"context"`
-}
-
+// DataInfoEth describes the outer structure of the block for Ethereum.
 type DataInfoEth struct {
 	Block                 BlockEth `json:"block"`
-	Uncles                []string `json:"uncles"` //??
+	Uncles                []string `json:"uncles"`
 	Transactions          []string `json:"transactions"`
 	SyntheticTransactions []int64  `json:"synthetic_transactions"`
 }
 
+// DataInfo describes the outer structure of the block.
 type DataInfo struct {
 	Block        Block    `json:"block"`
 	Transactions []string `json:"transactions"`
 }
 
+// Block the structure of one specific Bitcoin-like block.
 type Block struct {
 	ID               int     `json:"id"`
 	Hash             string  `json:"hash"`
@@ -73,6 +73,7 @@ type Block struct {
 	GuessedMiner     string  `json:"guessed_miner"`
 }
 
+// BlockEth the structure of one specific Ethereum block.
 type BlockEth struct {
 	ID                        int     `json:"id"`
 	Hash                      string  `json:"hash"`
@@ -113,6 +114,7 @@ type BlockEth struct {
 	RewardUsd                 float32 `json:"reward_usd"`
 }
 
+// Context common context for all requests
 type Context struct {
 	Code           int     `json:"code"`
 	Source         string  `json:"source"`
@@ -122,7 +124,7 @@ type Context struct {
 	State          int     `json:"state"`
 	MarketPriceUsd float64 `json:"market_price_usd"`
 	Cache          *Cache  `json:"cache"`
-	API            *Api    `json:"api"`
+	API            *API    `json:"api"`
 	Server         string  `json:"server"`
 	Time           float32 `json:"time"`
 	RenderTime     float32 `json:"render_time"`
@@ -130,6 +132,7 @@ type Context struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
+// Cache common cache for all requests
 type Cache struct {
 	Live     bool    `json:"live"`
 	Duration int     `json:"duration"`
@@ -138,7 +141,8 @@ type Cache struct {
 	Time     float32 `json:"time"`
 }
 
-type Api struct {
+// API common API for all requests
+type API struct {
 	Version         string `json:"version"`
 	LastMajorUpdate string `json:"last_major_update"`
 	NextMajorUpdate string `json:"next_major_update"`
@@ -146,6 +150,7 @@ type Api struct {
 	Notice          string `json:"notice"`
 }
 
+// GetBlock Fetch a Bitcoin-like block
 func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -161,11 +166,12 @@ func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
 	return rsp, e
 }
 
-func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlocks, error) {
+// GetBlocks Fetches multiple Bitcoin-like blocks
+func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlock, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
 	}
-	rsp := &DataBlocks{}
+	rsp := &DataBlock{}
 	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
 	e := c.loadResponse(path, rsp)
 
@@ -175,6 +181,7 @@ func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlocks, error
 	return rsp, e
 }
 
+// GetBlockEth Fetch an Ethereum block
 func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -190,6 +197,7 @@ func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, erro
 	return rsp, e
 }
 
+// GetBlocksEth Fetches multiple Ethereum blocks
 func (c *Client) GetBlocksEth(crypto string, blockIDs []string) (*DataBlockEth, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)

@@ -7,27 +7,32 @@ import (
 	"strings"
 )
 
+// DataTransaction includes full server response to transaction request.
 type DataTransaction struct {
 	Data    map[string]TransactionInfo `json:"data"`
 	Context *Context                   `json:"context"`
 }
 
+// DataTransactionEth includes full server response to transaction request for Ethereum.
 type DataTransactionEth struct {
 	Data    map[string]TransactionInfoEth `json:"data"`
 	Context ContextEth                    `json:"context"`
 }
 
+// TransactionInfo describes the outer structure of the transaction.
 type TransactionInfo struct {
-	Transaction Transaction   `json:"transaction"`
-	Inputs      []interface{} `json:"inputs"`
-	Outputs     []Outputs     `json:"outputs"`
+	Transaction Transaction `json:"transaction"`
+	Inputs      []Inputs    `json:"inputs"`
+	Outputs     []Outputs   `json:"outputs"`
 }
 
+// TransactionInfoEth describes the outer structure of the transaction for Ethereum.
 type TransactionInfoEth struct {
 	Transaction TransactionEth `json:"transaction"`
 	Calls       []Calls        `json:"calls"`
 }
 
+// TransactionEth is the structure of one specific transaction for Ethereum.
 type TransactionEth struct {
 	BlockID              int     `json:"block_id"`
 	ID                   int64   `json:"id"`
@@ -60,9 +65,10 @@ type TransactionEth struct {
 	MaxPriorityFeePerGas float32 `json:"max_priority_fee_per_gas"`
 	BaseFeePerGas        float32 `json:"base_fee_per_gas"`
 	Burned               string  `json:"burned"`
-	Type2718             bool    `json:"type_2718"` //??
+	Type2718             int     `json:"type_2718"`
 }
 
+// Calls is the structure of one specific calls block.
 type Calls struct {
 	BlockID         int     `json:"block_id"`
 	TransactionID   int64   `json:"transaction_id"`
@@ -84,6 +90,7 @@ type Calls struct {
 	OutputHex       string  `json:"output_hex"`
 }
 
+// Transaction is the structure of one specific transaction.
 type Transaction struct {
 	BlockID        int     `json:"block_id"`
 	ID             int     `json:"id"`
@@ -112,6 +119,7 @@ type Transaction struct {
 	IsRbf          bool    `json:"is_rbf"`
 }
 
+// Inputs is the structure of one specific input block.
 type Inputs struct {
 	BlockID                 int     `json:"block_id"`
 	TransactionID           int     `json:"transaction_id"`
@@ -141,6 +149,7 @@ type Inputs struct {
 	Cdd                     float32 `json:"cdd"`
 }
 
+// Outputs is the structure of one specific output block.
 type Outputs struct {
 	BlockID                 int     `json:"block_id"`
 	TransactionID           int     `json:"transaction_id"`
@@ -170,6 +179,7 @@ type Outputs struct {
 	Cdd                     float32 `json:"cdd"`
 }
 
+// ContextEth the structure of context for transaction(s) for Ethereum.
 type ContextEth struct {
 	Code           int     `json:"code"`
 	Source         string  `json:"source"`
@@ -178,7 +188,7 @@ type ContextEth struct {
 	StateLayer2    int     `json:"state_layer_2"`
 	MarketPriceUsd float64 `json:"market_price_usd"`
 	Cache          *Cache  `json:"cache"`
-	API            *Api    `json:"api"`
+	API            *API    `json:"api"`
 	Server         string  `json:"server"`
 	Time           float64 `json:"time"`
 	RenderTime     float64 `json:"render_time"`
@@ -186,6 +196,7 @@ type ContextEth struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
+// GetTransaction Fetches a Bitcoin-like transaction
 func (c *Client) GetTransaction(crypto string, TxID string) (*DataTransaction, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -200,6 +211,7 @@ func (c *Client) GetTransaction(crypto string, TxID string) (*DataTransaction, e
 	return rsp, e
 }
 
+// GetTransactionEth Fetches an Ethereum transaction
 func (c *Client) GetTransactionEth(crypto string, TxID string) (*DataTransactionEth, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -219,6 +231,7 @@ func (c *Client) GetTransactionEth(crypto string, TxID string) (*DataTransaction
 	return rsp, e
 }
 
+// GetTransactions Fetches multiple Bitcoin-like transaction
 func (c *Client) GetTransactions(crypto string, TxIDs []string) (*DataTransaction, error) {
 	if !Contains(GetSupportedCrypto(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -233,6 +246,7 @@ func (c *Client) GetTransactions(crypto string, TxIDs []string) (*DataTransactio
 	return rsp, e
 }
 
+// GetTransactionsEth Fetches multiple Ethereum transaction
 func (c *Client) GetTransactionsEth(crypto string, TxIDs []string) (*DataTransactionEth, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)

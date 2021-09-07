@@ -7,15 +7,18 @@ import (
 	"strings"
 )
 
+// DataUncle includes full server response to uncle request.
 type DataUncle struct {
 	Data    map[string]UncleInfo `json:"data"`
 	Context ContextUncle         `json:"context"`
 }
 
+// UncleInfo describes the outer structure of the uncle.
 type UncleInfo struct {
 	Uncle Uncle `json:"uncle"`
 }
 
+// Uncle is the structure of one specific uncle block.
 type Uncle struct {
 	ParentBlockID    int     `json:"parent_block_id"`
 	Index            int     `json:"index"`
@@ -41,6 +44,7 @@ type Uncle struct {
 	GenerationUsd    float64 `json:"generation_usd"`
 }
 
+// ContextUncle the structure of context for uncle(s).
 type ContextUncle struct {
 	Code           int     `json:"code"`
 	Source         string  `json:"source"`
@@ -49,7 +53,7 @@ type ContextUncle struct {
 	StateLayer2    int     `json:"state_layer_2"`
 	MarketPriceUsd float64 `json:"market_price_usd"`
 	Cache          *Cache  `json:"cache"`
-	API            *Api    `json:"api"`
+	API            *API    `json:"api"`
 	Server         string  `json:"server"`
 	Time           float64 `json:"time"`
 	RenderTime     float64 `json:"render_time"`
@@ -57,6 +61,7 @@ type ContextUncle struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
+// GetUncle Fetch an uncle block created on Ethereum
 func (c *Client) GetUncle(crypto string, hash string) (*DataUncle, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)
@@ -77,6 +82,7 @@ func (c *Client) GetUncle(crypto string, hash string) (*DataUncle, error) {
 	return rsp, e
 }
 
+// GetUncles Fetch multiple uncle blocks created on Ethereum
 func (c *Client) GetUncles(crypto string, hashes []string) (*DataUncle, error) {
 	if !Contains(GetSupportedCryptoEth(), crypto) {
 		log.Fatalf("error: %v is not supported", crypto)

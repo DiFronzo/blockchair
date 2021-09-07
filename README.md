@@ -4,7 +4,7 @@
 </h1>
 <p align="center">Client for the blockchair.com API using GO.
 
-<p align="center"><a href="https://github.com/DiFronzo/blockchair/releases" target="_blank"><img src="https://img.shields.io/badge/version-v0.0.1-blue?style=for-the-badge&logo=none" alt="BC-API version" /></a>&nbsp;<a href="https://golang.org/" target="_blank"><img src="https://img.shields.io/badge/GO-1.17+-00ADD8?style=for-the-badge&logo=GO" alt="go version" /></a>&nbsp;<img src="https://img.shields.io/badge/license-MIT-red?style=for-the-badge&logo=none" alt="license" />&nbsp;<img alt="code size" src="https://img.shields.io/github/languages/code-size/difronzo/blockchair?style=for-the-badge&logo=none">&nbsp;<a href="https://goreportcard.com/report/github.com/DiFronzo/blockchair" target="_blank"><img src="https://goreportcard.com/badge/github.com/DiFronzo/blockchair?style=for-the-badge&logo=none" alt="GO report" />&nbsp;<a href="https://pkg.go.dev/github.com/DiFronzo/blockchair" target="_blank"><img src="https://img.shields.io/badge/GoDoc-reference-blue?style=for-the-badge&logo=go" alt="GoDoc" /></a></p>
+<p align="center"><a href="https://github.com/DiFronzo/blockchair/releases" target="_blank"><img src="https://img.shields.io/badge/version-v0.0.2-blue?style=for-the-badge&logo=none" alt="BC-API version" /></a>&nbsp;<a href="https://golang.org/" target="_blank"><img src="https://img.shields.io/badge/GO-1.17+-00ADD8?style=for-the-badge&logo=GO" alt="go version" /></a>&nbsp;<img src="https://img.shields.io/badge/license-MIT-red?style=for-the-badge&logo=none" alt="license" />&nbsp;<img alt="code size" src="https://img.shields.io/github/languages/code-size/difronzo/blockchair?style=for-the-badge&logo=none">&nbsp;<a href="https://goreportcard.com/report/github.com/DiFronzo/blockchair" target="_blank"><img src="https://goreportcard.com/badge/github.com/DiFronzo/blockchair?style=for-the-badge&logo=none" alt="GO report" />&nbsp;<a href="https://pkg.go.dev/github.com/DiFronzo/blockchair" target="_blank"><img src="https://img.shields.io/badge/GoDoc-reference-blue?style=for-the-badge&logo=go" alt="GoDoc" /></a></p>
 
 
 
@@ -21,7 +21,7 @@ go version
 To quickly start using the module run the following command for installation.
 
 ```bash
-go get -u github.com/DiFronzo/blockchair
+go install github.com/DiFronzo/blockchair@latest
 ```
 
 That's all you need to know to start! 🎉
