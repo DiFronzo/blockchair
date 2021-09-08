@@ -93,9 +93,9 @@ type AddressInfo struct {
 // AddressEth is the structure of one specific Ethereum address.
 type AddressEth struct {
 	Type                string  `json:"type"`
-	ContractCodeHex     string  `json:"contract_code_hex"`
-	ContractCreated     string  `json:"contract_created"`
-	ContractDestroyed   string  `json:"contract_destroyed"`
+	ContractCodeHex     string  `json:"contract_code_hex.omitempty"`
+	ContractCreated     string  `json:"contract_created.omitempty"`
+	ContractDestroyed   string  `json:"contract_destroyed.omitempty"`
 	Balance             string  `json:"balance"`
 	BalanceUsd          float64 `json:"balance_usd"`
 	ReceivedApproximate string  `json:"received_approximate"`
@@ -112,7 +112,7 @@ type AddressEth struct {
 	LastSeenReceiving   string  `json:"last_seen_receiving"`
 	FirstSeenSpending   string  `json:"first_seen_spending"`
 	LastSeenSpending    string  `json:"last_seen_spending"`
-	Nonce               int     `json:"nonce"`
+	Nonce               int     `json:"nonce.omitempty"`
 }
 
 // Address the structure of one specific Bitcoin-like address.
@@ -129,9 +129,9 @@ type Address struct {
 	UnspentOutputCount int     `json:"unspent_output_count"`
 	FirstSeenReceiving string  `json:"first_seen_receiving"`
 	LastSeenReceiving  string  `json:"last_seen_receiving"`
-	FirstSeenSpending  string  `json:"first_seen_spending"`
-	LastSeenSpending   string  `json:"last_seen_spending"`
-	ScripthashType     string  `json:"scripthash_type"`
+	FirstSeenSpending  string  `json:"first_seen_spending.omitempty"`
+	LastSeenSpending   string  `json:"last_seen_spending.omitempty"`
+	ScripthashType     string  `json:"scripthash_type.omitempty"`
 	TransactionCount   int     `json:"transaction_count"`
 }
 
@@ -146,10 +146,10 @@ type Utxo struct {
 // CallsAddress is the structures of calls.
 type CallsAddress struct {
 	BlockID         int     `json:"block_id"`
-	TransactionHash string  `json:"transaction_hash"`
+	TransactionHash string  `json:"transaction_hash.omitempty"`
 	Index           string  `json:"index"`
 	Time            string  `json:"time"`
-	Sender          string  `json:"sender"`
+	Sender          string  `json:"sender.omitempty"`
 	Recipient       string  `json:"recipient"`
 	Value           float64 `json:"value"`
 	ValueUsd        float64 `json:"value_usd"`

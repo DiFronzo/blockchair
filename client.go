@@ -65,7 +65,9 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 	}
 
 	if options != nil {
-		options["key"] = c.APIKey
+		if c.APIKey != "" {
+			options["key"] = c.APIKey
+		}
 		values := url.Values{}
 		for k, v := range options {
 			values.Set(k, v)

@@ -137,14 +137,14 @@ type Cache struct {
 	Duration int     `json:"duration"`
 	Since    string  `json:"since"`
 	Until    string  `json:"until"`
-	Time     float32 `json:"time"`
+	Time     float32 `json:"time.omitempty"`
 }
 
 // API common API for all requests
 type API struct {
 	Version         string `json:"version"`
 	LastMajorUpdate string `json:"last_major_update"`
-	NextMajorUpdate string `json:"next_major_update"`
+	NextMajorUpdate string `json:"next_major_update.omitempty"`
 	Documentation   string `json:"documentation"`
 	Notice          string `json:"notice"`
 }

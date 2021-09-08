@@ -17,7 +17,7 @@ func init() {
 func main() {
 	c := blockchair.New()
 	c.APIKey = clientID
-	resp, err := c.GetAddressEth("ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d")
+	resp, err := c.GetAddressEthAdv("ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d", map[string]string{"limit": "1", "offset": "0"})
 	if err != nil {
 		log.Fatalln(err)
 	}
