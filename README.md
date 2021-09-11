@@ -41,7 +41,7 @@ import (
 )
 
 func main() {
-	c, _ := blockchair.New(nil)
+	c, _ := blockchair.New()
 	resp, err := c.GetAddress("bitcoin", "34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo")
 	if err != nil {
 		log.Fatalln(err)
@@ -65,7 +65,7 @@ import (
 )
 
 func main() {
-	c, _ := blockchair.New(nil)
+	c, _ := blockchair.New()
 	resp, err := c.GetAddresses("bitcoin", []string{"34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo","bc1qgdjqv0av3q56jvd82tkdjpy7gdp9ut8tlqmgrpmv24sq90ecnvqqjwvw97"})
 	if err != nil {
 		log.Fatalln(err)
