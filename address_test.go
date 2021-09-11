@@ -31,7 +31,8 @@ func TestGetAddress(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetAddress(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -50,7 +51,8 @@ func TestGetAddresses(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetAddresses(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -71,7 +73,8 @@ func TestGetAddressEth(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetAddressEth(test.currency, test.address)
 			if e != nil {
 				t.Fatal(e)
@@ -81,7 +84,8 @@ func TestGetAddressEth(t *testing.T) {
 }
 
 func BenchmarkGetAddressUnmarshal(b *testing.B) {
-	cl, _ := New(clientID)
+	cl := New()
+	cl.APIKey = clientID
 	response, e := cl.GetAddress("bitcoin", "bc1qgdjqv0av3q56jvd82tkdjpy7gdp9ut8tlqmgrpmv24sq90ecnvqqjwvw97")
 	if e != nil {
 		b.Fatal(e)

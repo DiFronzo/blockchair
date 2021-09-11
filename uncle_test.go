@@ -21,7 +21,8 @@ func TestGetUncle(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetUncle(test.currency, test.hash)
 			if e != nil {
 				t.Fatal(e)
@@ -40,7 +41,8 @@ func TestGetUncles(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.currency, func(t *testing.T) {
-			cl, _ := New(clientID)
+			cl := New()
+			cl.APIKey = clientID
 			_, e := cl.GetUncles(test.currency, test.hashes)
 			if e != nil {
 				t.Fatal(e)
