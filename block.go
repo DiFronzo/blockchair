@@ -1,28 +1,27 @@
 package blockchair
 
 import (
-	"log"
 	"strings"
 )
 
 // DataBlock includes full server response to block request.
 type DataBlock struct {
-	Data    map[string]DataInfo `json:"data"`
+	Data    map[string]DataInfo `json:"data,omitempty"`
 	Context Context             `json:"context"`
 }
 
 // DataBlockEth includes full server response to block request for Ethereum.
 type DataBlockEth struct {
-	Data    map[string]DataInfoEth `json:"data"`
+	Data    map[string]DataInfoEth `json:"data,omitempty"`
 	Context Context                `json:"context"`
 }
 
 // DataInfoEth describes the outer structure of the block for Ethereum.
 type DataInfoEth struct {
-	Block                 BlockEth `json:"block"`
-	Uncles                []string `json:"uncles"`
-	Transactions          []string `json:"transactions"`
-	SyntheticTransactions []int64  `json:"synthetic_transactions"`
+	Block                 BlockEth  `json:"block"`
+	Uncles                []string  `json:"uncles,omitempty"`
+	Transactions          []string  `json:"transactions,omitempty"`
+	SyntheticTransactions []float32 `json:"synthetic_transactions"`
 }
 
 // DataInfo describes the outer structure of the block.
@@ -81,10 +80,10 @@ type BlockEth struct {
 	Size                      int     `json:"size"`
 	Miner                     string  `json:"miner"`
 	ExtraDataHex              string  `json:"extra_data_hex"`
-	Difficulty                int64   `json:"difficulty"`
+	Difficulty                float32 `json:"difficulty"`
 	GasUsed                   int     `json:"gas_used"`
 	GasLimit                  int     `json:"gas_limit"`
-	BaseFeePerGas             float64 `json:"base_fee_per_gas"`
+	BaseFeePerGas             float32 `json:"base_fee_per_gas,omitempty"`
 	LogsBloom                 string  `json:"logs_bloom"`
 	MixHash                   string  `json:"mix_hash"`
 	Nonce                     string  `json:"nonce"`
@@ -105,10 +104,10 @@ type BlockEth struct {
 	Generation                string  `json:"generation"`
 	GenerationUsd             float32 `json:"generation_usd"`
 	UncleGeneration           string  `json:"uncle_generation"`
-	UncleGenerationUsd        int     `json:"uncle_generation_usd"`
+	UncleGenerationUsd        float32 `json:"uncle_generation_usd"`
 	FeeTotal                  string  `json:"fee_total"`
 	FeeTotalUsd               float32 `json:"fee_total_usd"`
-	BurnedTotal               float64 `json:"burned_total"`
+	BurnedTotal               string  `json:"burned_total,omitempty"`
 	Reward                    string  `json:"reward"`
 	RewardUsd                 float32 `json:"reward_usd"`
 }
@@ -137,14 +136,14 @@ type Cache struct {
 	Duration int     `json:"duration"`
 	Since    string  `json:"since"`
 	Until    string  `json:"until"`
-	Time     float32 `json:"time.omitempty"`
+	Time     float32 `json:"time,omitempty"`
 }
 
 // API common API for all requests
 type API struct {
 	Version         string `json:"version"`
 	LastMajorUpdate string `json:"last_major_update"`
-	NextMajorUpdate string `json:"next_major_update.omitempty"`
+	NextMajorUpdate string `json:"next_major_update,omitempty"`
 	Documentation   string `json:"documentation"`
 	Notice          string `json:"notice"`
 }
@@ -156,11 +155,11 @@ func (c *Client) GetBlock(crypto string, blockID string) (*DataBlock, error) {
 
 // GetBlockAdv fetch a Bitcoin-like block with options.
 func (c *Client) GetBlockAdv(crypto string, blockID string, options map[string]string) (resp *DataBlock, e error) {
-	if !Contains(GetSupportedCrypto(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCrypto(crypto); e != nil {
+		return
 	}
-	resp = &DataBlock{}
 
+	resp = &DataBlock{}
 	var path = crypto + "/dashboards/block/" + blockID
 	return resp, c.LoadResponse(path, resp, options)
 }
@@ -172,8 +171,8 @@ func (c *Client) GetBlocks(crypto string, blockIDs []string) (*DataBlock, error)
 
 // GetBlocksAdv fetches multiple Bitcoin-like blocks with options
 func (c *Client) GetBlocksAdv(crypto string, blockIDs []string, options map[string]string) (resp *DataBlock, e error) {
-	if !Contains(GetSupportedCrypto(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCrypto(crypto); e != nil {
+		return
 	}
 
 	resp = &DataBlock{}
@@ -188,11 +187,11 @@ func (c *Client) GetBlockEth(crypto string, blockID string) (*DataBlockEth, erro
 
 // GetBlockEthAdv fetch an Ethereum block with options.
 func (c *Client) GetBlockEthAdv(crypto string, blockID string, options map[string]string) (resp *DataBlockEth, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
-	resp = &DataBlockEth{}
 
+	resp = &DataBlockEth{}
 	var path = crypto + "/dashboards/block/" + blockID
 	return resp, c.LoadResponse(path, resp, options)
 }
@@ -204,9 +203,10 @@ func (c *Client) GetBlocksEth(crypto string, blockIDs []string) (*DataBlockEth, 
 
 // GetBlocksEthAdv fetches multiple Ethereum blocks with options.
 func (c *Client) GetBlocksEthAdv(crypto string, blockIDs []string, options map[string]string) (resp *DataBlockEth, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
+
 	resp = &DataBlockEth{}
 	var path = crypto + "/dashboards/blocks/" + strings.Join(blockIDs, ",")
 	return resp, c.LoadResponse(path, resp, options)

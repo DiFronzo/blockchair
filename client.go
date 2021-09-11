@@ -2,7 +2,7 @@ package blockchair
 
 import (
 	"encoding/json"
-	"fmt"
+	"errors"
 	"io"
 	"io/ioutil"
 	"log"
@@ -18,16 +18,17 @@ const (
 	UserAgent = "blockchair-api-golang-v1"
 )
 
-// Contains used with GetSupportedCrypto and/or GetSupportedCryptoEth to verify correct crypto.
-func Contains(slice []string, item string) bool {
-	set := make(map[string]struct{}, len(slice))
-	for _, s := range slice {
-		set[s] = struct{}{}
-	}
-
-	_, ok := set[item]
-	return ok
-}
+// Errors it is a set of errors returned when working with the package.
+var (
+	ErrTHW = errors.New("blockchair: transaction hash is wrong")
+	ErrSC  = errors.New("blockchair: the Bitcoin-like cryptocurrency is not supported")
+	ErrSCE = errors.New("blockchair: the Ethereum cryptocurrency is not supported")
+	ErrSCG = errors.New("blockchair: the cryptocurrency is not supported")
+	ErrCGD = errors.New("blockchair: cannot get data on url")
+	ErrCRR = errors.New("blockchair: could not read answer response")
+	ErrRPE = errors.New("blockchair: response parsing error")
+	ErrIRS = errors.New("blockchair: incorrect response status")
+)
 
 // GetSupportedCrypto List of supported Bitcoin-like crypto.
 func GetSupportedCrypto() []string {
@@ -77,14 +78,14 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 
 	req, e := http.NewRequest("GET", fullPath, nil)
 	if e != nil {
-		panic(e)
+		return c.err2(ErrCGD, e)
 	}
-	fmt.Println("querying..." + fullPath)
+	// fmt.Println("querying..." + fullPath)
 	req.Header.Set("User-Agent", c.userAgent())
 
 	resp, e := c.client.Do(req)
 	if e != nil {
-		panic(e)
+		return c.err3(ErrCGD, e, resp)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -96,15 +97,16 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 
 	b, e := ioutil.ReadAll(resp.Body)
 	if e != nil {
-		log.Fatal(e)
+		return c.err3(ErrCRR, e, resp)
 	}
 
 	if resp.Status[0] != '2' {
-		return fmt.Errorf("expected status 2xx, got %s: %s", resp.Status, string(b))
+		return c.err3(ErrIRS, e, resp)
+		//return fmt.Errorf("expected status 2xx, got %s: %s", resp.Status, string(b))
 	}
 
 	if err := json.Unmarshal(b, &i); err != nil {
-		fmt.Printf("Error parsing JSON string - %s", err)
+		return c.err3(ErrRPE, e, resp)
 	}
 
 	return nil

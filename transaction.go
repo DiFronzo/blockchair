@@ -1,21 +1,19 @@
 package blockchair
 
 import (
-	"log"
-	"regexp"
 	"strings"
 )
 
 // DataTransaction includes full server response to transaction request.
 type DataTransaction struct {
-	Data    map[string]TransactionInfo `json:"data"`
+	Data    map[string]TransactionInfo `json:"data,omitempty"`
 	Context *Context                   `json:"context"`
 }
 
 // DataTransactionEth includes full server response to transaction request for Ethereum.
 type DataTransactionEth struct {
-	Data    map[string]TransactionInfoEth `json:"data"`
-	Context ContextEth                    `json:"context"`
+	Data    map[string]TransactionInfoEth `json:"data,omitempty"`
+	Context *ContextUncle                 `json:"context"`
 }
 
 // TransactionInfo describes the outer structure of the transaction.
@@ -45,11 +43,11 @@ type TransactionEth struct {
 	Recipient            string  `json:"recipient"`
 	CallCount            int     `json:"call_count"`
 	Value                string  `json:"value"`
-	ValueUsd             float64 `json:"value_usd"`
+	ValueUsd             float32 `json:"value_usd"`
 	InternalValue        string  `json:"internal_value"`
-	InternalValueUsd     float64 `json:"internal_value_usd"`
+	InternalValueUsd     float32 `json:"internal_value_usd"`
 	Fee                  string  `json:"fee"`
-	FeeUsd               float64 `json:"fee_usd"`
+	FeeUsd               float32 `json:"fee_usd"`
 	GasUsed              int     `json:"gas_used"`
 	GasLimit             int     `json:"gas_limit"`
 	GasPrice             int64   `json:"gas_price"`
@@ -58,13 +56,13 @@ type TransactionEth struct {
 	V                    string  `json:"v"`
 	R                    string  `json:"r"`
 	S                    string  `json:"s"`
-	Version              int     `json:"version"`
-	EffectiveGasPrice    float32 `json:"effective_gas_price"`
-	MaxFeePerGas         float32 `json:"max_fee_per_gas"`
-	MaxPriorityFeePerGas float32 `json:"max_priority_fee_per_gas"`
-	BaseFeePerGas        float32 `json:"base_fee_per_gas"`
+	Version              int     `json:"version,omitempty"`
+	EffectiveGasPrice    float32 `json:"effective_gas_price,omitempty"`
+	MaxFeePerGas         float32 `json:"max_fee_per_gas,omitempty"`
+	MaxPriorityFeePerGas float32 `json:"max_priority_fee_per_gas,omitempty"`
+	BaseFeePerGas        float32 `json:"base_fee_per_gas,omitempty"`
 	Burned               string  `json:"burned"`
-	Type2718             int     `json:"type_2718"`
+	Type2718             int     `json:"type_2718,omitempty"`
 }
 
 // Calls is the structure of one specific calls block.
@@ -77,7 +75,7 @@ type Calls struct {
 	Date            string  `json:"date"`
 	Time            string  `json:"time"`
 	Failed          bool    `json:"failed"`
-	FailReason      string  `json:"fail_reason"`
+	FailReason      string  `json:"fail_reason,omitempty"`
 	Type            string  `json:"type"`
 	Sender          string  `json:"sender"`
 	Recipient       string  `json:"recipient"`
@@ -86,7 +84,7 @@ type Calls struct {
 	ValueUsd        float64 `json:"value_usd"`
 	Transferred     bool    `json:"transferred"`
 	InputHex        string  `json:"input_hex"`
-	OutputHex       string  `json:"output_hex"`
+	OutputHex       string  `json:"output_hex,omitempty"`
 }
 
 // Transaction is the structure of one specific transaction.
@@ -132,7 +130,7 @@ type Inputs struct {
 	Type                    string  `json:"type"`
 	ScriptHex               string  `json:"script_hex"`
 	IsFromCoinbase          bool    `json:"is_from_coinbase"`
-	IsSpendable             bool    `json:"is_spendable"`
+	IsSpendable             bool    `json:"is_spendable,omitempty"`
 	IsSpent                 bool    `json:"is_spent"`
 	SpendingBlockID         int     `json:"spending_block_id"`
 	SpendingTransactionID   int     `json:"spending_transaction_id"`
@@ -162,37 +160,20 @@ type Outputs struct {
 	Type                    string  `json:"type"`
 	ScriptHex               string  `json:"script_hex"`
 	IsFromCoinbase          bool    `json:"is_from_coinbase"`
-	IsSpendable             bool    `json:"is_spendable"`
+	IsSpendable             bool    `json:"is_spendable,omitempty"`
 	IsSpent                 bool    `json:"is_spent"`
-	SpendingBlockID         int     `json:"spending_block_id"`
-	SpendingTransactionID   int     `json:"spending_transaction_id"`
-	SpendingIndex           int     `json:"spending_index"`
-	SpendingTransactionHash string  `json:"spending_transaction_hash"`
-	SpendingDate            string  `json:"spending_date"`
-	SpendingTime            string  `json:"spending_time"`
-	SpendingValueUsd        float32 `json:"spending_value_usd"`
-	SpendingSequence        int64   `json:"spending_sequence"`
-	SpendingSignatureHex    string  `json:"spending_signature_hex"`
-	SpendingWitness         string  `json:"spending_witness"`
-	Lifespan                int     `json:"lifespan"`
-	Cdd                     float32 `json:"cdd"`
-}
-
-// ContextEth the structure of context for transaction(s) for Ethereum.
-type ContextEth struct {
-	Code           int     `json:"code"`
-	Source         string  `json:"source"`
-	Results        int     `json:"results"`
-	State          int     `json:"state"`
-	StateLayer2    int     `json:"state_layer_2"`
-	MarketPriceUsd float64 `json:"market_price_usd"`
-	Cache          *Cache  `json:"cache"`
-	API            *API    `json:"api"`
-	Server         string  `json:"server"`
-	Time           float64 `json:"time"`
-	RenderTime     float64 `json:"render_time"`
-	FullTime       float64 `json:"full_time"`
-	RequestCost    float32 `json:"request_cost"`
+	SpendingBlockID         int     `json:"spending_block_id,omitempty"`
+	SpendingTransactionID   int     `json:"spending_transaction_id,omitempty"`
+	SpendingIndex           int     `json:"spending_index,omitempty"`
+	SpendingTransactionHash string  `json:"spending_transaction_hash,omitempty"`
+	SpendingDate            string  `json:"spending_date,omitempty"`
+	SpendingTime            string  `json:"spending_time,omitempty"`
+	SpendingValueUsd        float32 `json:"spending_value_usd,omitempty"`
+	SpendingSequence        int64   `json:"spending_sequence,omitempty"`
+	SpendingSignatureHex    string  `json:"spending_signature_hex,omitempty"`
+	SpendingWitness         string  `json:"spending_witness,omitempty"`
+	Lifespan                int     `json:"lifespan,omitempty"`
+	Cdd                     float32 `json:"cdd,omitempty"`
 }
 
 // GetTransaction fetches a Bitcoin-like transaction.
@@ -202,9 +183,10 @@ func (c *Client) GetTransaction(crypto string, txID string) (*DataTransaction, e
 
 // GetTransactionAdv fetches a Bitcoin-like transaction with options.
 func (c *Client) GetTransactionAdv(crypto string, txID string, options map[string]string) (resp *DataTransaction, e error) {
-	if !Contains(GetSupportedCrypto(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCrypto(crypto); e != nil {
+		return
 	}
+
 	resp = &DataTransaction{}
 	var path = crypto + "/dashboards/transaction/" + txID
 	return resp, c.LoadResponse(path, resp, options)
@@ -217,12 +199,11 @@ func (c *Client) GetTransactionEth(crypto string, txID string) (*DataTransaction
 
 // GetTransactionEthAdv fetches an Ethereum transaction with options.
 func (c *Client) GetTransactionEthAdv(crypto string, txID string, options map[string]string) (resp *DataTransactionEth, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
-	r, _ := regexp.Compile(Hash)
-	if !r.MatchString(txID) {
-		log.Fatalf("error: %v is not a valid hash", txID)
+	if e = c.ValidateHashEth(txID); e != nil {
+		return
 	}
 
 	resp = &DataTransactionEth{}
@@ -237,9 +218,10 @@ func (c *Client) GetTransactions(crypto string, txIDs []string) (*DataTransactio
 
 // GetTransactionsAdv fetches multiple Bitcoin-like transaction with options
 func (c *Client) GetTransactionsAdv(crypto string, txIDs []string, options map[string]string) (resp *DataTransaction, e error) {
-	if !Contains(GetSupportedCrypto(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCrypto(crypto); e != nil {
+		return
 	}
+
 	resp = &DataTransaction{}
 	var path = crypto + "/dashboards/transactions/" + strings.Join(txIDs, ",")
 	return resp, c.LoadResponse(path, resp, options)
@@ -252,14 +234,11 @@ func (c *Client) GetTransactionsEth(crypto string, txIDs []string) (*DataTransac
 
 // GetTransactionsEthAdv fetches multiple Ethereum transactions with options.
 func (c *Client) GetTransactionsEthAdv(crypto string, txIDs []string, options map[string]string) (resp *DataTransactionEth, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
-	r, _ := regexp.Compile(Hash)
-	for i := range txIDs {
-		if !r.MatchString(txIDs[i]) {
-			log.Fatalf("error: %v is not a valid hash", txIDs[i])
-		}
+	if e = c.ValidateHashesEth(txIDs); e != nil {
+		return
 	}
 
 	resp = &DataTransactionEth{}

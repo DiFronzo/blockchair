@@ -1,8 +1,6 @@
 package blockchair
 
 import (
-	"log"
-	"regexp"
 	"strings"
 )
 
@@ -28,10 +26,10 @@ type Uncle struct {
 	Size             int     `json:"size"`
 	Miner            string  `json:"miner"`
 	ExtraDataHex     string  `json:"extra_data_hex"`
-	Difficulty       int64   `json:"difficulty"`
+	Difficulty       float32 `json:"difficulty"`
 	GasUsed          int     `json:"gas_used"`
 	GasLimit         int     `json:"gas_limit"`
-	BaseFeePerGas    float32 `json:"base_fee_per_gas"`
+	BaseFeePerGas    float32 `json:"base_fee_per_gas,omitempty"`
 	LogsBloom        string  `json:"logs_bloom"`
 	MixHash          string  `json:"mix_hash"`
 	Nonce            string  `json:"nonce"`
@@ -40,7 +38,7 @@ type Uncle struct {
 	StateRoot        string  `json:"state_root"`
 	TransactionsRoot string  `json:"transactions_root"`
 	Generation       string  `json:"generation"`
-	GenerationUsd    float64 `json:"generation_usd"`
+	GenerationUsd    float32 `json:"generation_usd"`
 }
 
 // ContextUncle the structure of context for uncle(s).
@@ -50,7 +48,7 @@ type ContextUncle struct {
 	Results        int     `json:"results"`
 	State          int     `json:"state"`
 	StateLayer2    int     `json:"state_layer_2"`
-	MarketPriceUsd float64 `json:"market_price_usd"`
+	MarketPriceUsd float32 `json:"market_price_usd"`
 	Cache          *Cache  `json:"cache"`
 	API            *API    `json:"api"`
 	Server         string  `json:"server"`
@@ -67,12 +65,11 @@ func (c *Client) GetUncle(crypto string, hash string) (*DataUncle, error) {
 
 // GetUncleAdv fetch an uncle block created on Ethereum with options.
 func (c *Client) GetUncleAdv(crypto string, hash string, options map[string]string) (resp *DataUncle, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
-	r, _ := regexp.Compile(Hash)
-	if !r.MatchString(hash) {
-		log.Fatalf("error: %v is not a valid hash", hash)
+	if e = c.ValidateHashEth(hash); e != nil {
+		return
 	}
 
 	resp = &DataUncle{}
@@ -87,15 +84,13 @@ func (c *Client) GetUncles(crypto string, hashes []string) (*DataUncle, error) {
 
 // GetUnclesAdv fetch multiple uncle blocks created on Ethereum with options.
 func (c *Client) GetUnclesAdv(crypto string, hashes []string, options map[string]string) (resp *DataUncle, e error) {
-	if !Contains(GetSupportedCryptoEth(), crypto) {
-		log.Fatalf("error: %v is not supported", crypto)
+	if e = c.ValidateCryptoEth(crypto); e != nil {
+		return
 	}
-	r, _ := regexp.Compile(Hash)
-	for i := range hashes {
-		if !r.MatchString(hashes[i]) {
-			log.Fatalf("error: %v is not a valid hash", hashes[i])
-		}
+	if e = c.ValidateHashesEth(hashes); e != nil {
+		return
 	}
+
 	resp = &DataUncle{}
 	var path = crypto + "/dashboards/uncles/" + strings.Join(hashes, ",")
 	return resp, c.LoadResponse(path, resp, options)
