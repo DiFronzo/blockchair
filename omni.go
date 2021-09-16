@@ -43,7 +43,7 @@ type ContextOmni struct {
 	RequestCost    float32 `json:"request_cost"`
 }
 
-// GetOmni fetch some basic information on an Omni Layer (Bitcoin) property (token)-
+// GetOmni fetch some basic information on an Omni Layer (Bitcoin) property (token).
 func (c *Client) GetOmni(prorertyID int64) (*DataOmni, error) {
 	return c.GetOmniAdv(prorertyID, nil)
 }

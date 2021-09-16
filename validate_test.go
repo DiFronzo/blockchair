@@ -46,3 +46,27 @@ func TestValidateHashEth(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateErc20Token(t *testing.T) {
+	t.Parallel()
+	c := New()
+	tests := []struct {
+		token  string
+		result bool
+	}{
+		// bad token
+		{"", false},
+		{"0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", false},
+		{"0xf0e12e5f3933dc91fda83fc6b1f1d7eb63f533994829fdf85f06ed4ba6ed42e0", false},
+		{"0111111111111111111114oLvT2", false},
+		{"0xasdadasdasda23123dasdasde12d", false},
+		{"xpub3KGPnzYshia2uSSz8BED2kSpx22bbGCkzq", false},
+	}
+	for _, test := range tests {
+		t.Run(test.token, func(t *testing.T) {
+			if e := c.ValidateErc20Token(test.token); e.Error() != ErrERC.Error() {
+				t.Fatal("incorrect error: " + e.Error())
+			}
+		})
+	}
+}
