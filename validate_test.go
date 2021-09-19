@@ -70,3 +70,24 @@ func TestValidateErc20Token(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateErc20Tokens(t *testing.T) {
+	t.Parallel()
+	c := New()
+	tests := []struct {
+		tokens []string
+		result bool
+	}{
+		// bad token
+		{[]string{"", "0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd"}, false},
+		{[]string{"0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", ""}, false},
+		{[]string{"0x4a73d94683f2c9c2Aaf32ccd5723F3e243D6a654", "0xasdadasdasda23123dasdasde12d"}, false},
+	}
+	for _, test := range tests {
+		t.Run("ERC-20 tokens test", func(t *testing.T) {
+			if e := c.ValidateErc20Tokens(test.tokens); e.Error() != ErrERC.Error() {
+				t.Fatal("incorrect error: " + e.Error())
+			}
+		})
+	}
+}
