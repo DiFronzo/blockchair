@@ -56,8 +56,8 @@ func TestValidateErc20Token(t *testing.T) {
 	}{
 		// bad token
 		{"", false},
-		{"0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", false},
-		{"0xf0e12e5f3933dc91fda83fc6b1f1d7eb63f533994829fdf85f06ed4ba6ed42e0", false},
+		{"x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", false},
+		{"f0e12e5f3933dc91fda83fc6b1f1d7eb63f533994829fdf85f06ed4ba6ed42e0", false},
 		{"0111111111111111111114oLvT2", false},
 		{"0xasdadasdasda23123dasdasde12d", false},
 		{"xpub3KGPnzYshia2uSSz8BED2kSpx22bbGCkzq", false},
