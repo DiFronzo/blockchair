@@ -63,3 +63,25 @@ func (c *Client) ValidateHashesEth(hashes []string) error {
 
 	return nil
 }
+
+// ValidateErc20Token validate ERC-20 token.
+func (c *Client) ValidateErc20Token(token string) error {
+	r, _ := regexp.Compile("0x[0-9a-fA-F]{40}")
+	if !r.MatchString(token) {
+		return c.err4(ErrERC, token)
+	}
+
+	return nil
+}
+
+// ValidateErc20Tokens validate ERC-20 tokens.
+func (c *Client) ValidateErc20Tokens(tokens []string) error {
+	r, _ := regexp.Compile("0x[0-9a-fA-F]{40}")
+	for i := range tokens {
+		if !r.MatchString(tokens[i]) {
+			return c.err4(ErrERC, tokens[i])
+		}
+	}
+
+	return nil
+}

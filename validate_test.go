@@ -46,3 +46,48 @@ func TestValidateHashEth(t *testing.T) {
 		})
 	}
 }
+
+func TestValidateErc20Token(t *testing.T) {
+	t.Parallel()
+	c := New()
+	tests := []struct {
+		token  string
+		result bool
+	}{
+		// bad token
+		{"", false},
+		{"x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", false},
+		{"f0e12e5f3933dc91fda83fc6b1f1d7eb63f533994829fdf85f06ed4ba6ed42e0", false},
+		{"0111111111111111111114oLvT2", false},
+		{"0xasdadasdasda23123dasdasde12d", false},
+		{"xpub3KGPnzYshia2uSSz8BED2kSpx22bbGCkzq", false},
+	}
+	for _, test := range tests {
+		t.Run(test.token, func(t *testing.T) {
+			if e := c.ValidateErc20Token(test.token); e.Error() != ErrERC.Error() {
+				t.Fatal("incorrect error: " + e.Error())
+			}
+		})
+	}
+}
+
+func TestValidateErc20Tokens(t *testing.T) {
+	t.Parallel()
+	c := New()
+	tests := []struct {
+		tokens []string
+		result bool
+	}{
+		// bad token
+		{[]string{"", "0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd"}, false},
+		{[]string{"0x411c2474183f1580fc32d09f2149265f786c1663312061dab514cf997c4e1cfd", ""}, false},
+		{[]string{"0x4a73d94683f2c9c2Aaf32ccd5723F3e243D6a654", "0xasdadasdasda23123dasdasde12d"}, false},
+	}
+	for _, test := range tests {
+		t.Run("ERC-20 tokens test", func(t *testing.T) {
+			if e := c.ValidateErc20Tokens(test.tokens); e.Error() != ErrERC.Error() {
+				t.Fatal("incorrect error: " + e.Error())
+			}
+		})
+	}
+}

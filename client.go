@@ -21,6 +21,7 @@ const (
 // Errors it is a set of errors returned when working with the package.
 var (
 	ErrTHW = errors.New("blockchair: transaction hash is wrong")
+	ErrERC = errors.New("blockchair: ERC-20 token is wrong")
 	ErrSC  = errors.New("blockchair: the Bitcoin-like cryptocurrency is not supported")
 	ErrSCE = errors.New("blockchair: the Ethereum cryptocurrency is not supported")
 	ErrSCG = errors.New("blockchair: the cryptocurrency is not supported")
