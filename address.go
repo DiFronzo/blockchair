@@ -332,7 +332,6 @@ func (c *Client) GetMutlichainAddressCheckAdv(mutliAddress MutliAddress, options
 		if e = c.ValidateCryptoMultichain(mutliAddress[j].currency); e != nil {
 			return
 		}
-
 		formatMultiAddr = append(formatMultiAddr, mutliAddress[j].currency+":"+mutliAddress[j].address)
 	}
 
