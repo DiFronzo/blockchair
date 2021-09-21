@@ -3,6 +3,7 @@ package blockchair
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -29,6 +30,7 @@ var (
 	ErrCRR = errors.New("blockchair: could not read answer response")
 	ErrRPE = errors.New("blockchair: response parsing error")
 	ErrIRS = errors.New("blockchair: incorrect response status")
+	ErrMAX = errors.New("blockchair: the maximum number of addresses is 100")
 )
 
 // GetSupportedCrypto List of supported Bitcoin-like crypto.
@@ -39,6 +41,11 @@ func GetSupportedCrypto() []string {
 // GetSupportedCryptoEth List of supported Ethereum crypto.
 func GetSupportedCryptoEth() []string {
 	return []string{"ethereum/testnet", "ethereum"}
+}
+
+// GetSupportedCryptoMultichain List of supported crypto for multichain address check.
+func GetSupportedCryptoMultichain() []string {
+	return []string{"bitcoin", "bitcoin-cash", "litecoin", "bitcoin-sv", "dash", "groestlcoin", "zcash", "ethereum"}
 }
 
 // Client specifies the mechanism by which individual API requests are made.
@@ -107,6 +114,7 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 	}
 
 	if err := json.Unmarshal(b, &i); err != nil {
+		fmt.Println(err)
 		return c.err3(ErrRPE, e, resp)
 	}
 

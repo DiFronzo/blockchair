@@ -23,6 +23,13 @@ func TestClient_CheckCryptoAddressBoth(t *testing.T) {
 	}
 }
 
+func TestClient_CheckCryptoAddressMultichain(t *testing.T) {
+	c := New()
+	if e := c.ValidateCryptoMultichain("dogecoin"); e.Error() != ErrSCG.Error() {
+		t.Fatal("incorrect error: " + e.Error())
+	}
+}
+
 func TestValidateHashEth(t *testing.T) {
 	t.Parallel()
 	c := New()

@@ -42,6 +42,15 @@ func (c *Client) ValidateCryptoBoth(crypto string) error {
 	return nil
 }
 
+// ValidateCryptoMultichain validate crypto for multichain address check.
+func (c *Client) ValidateCryptoMultichain(crypto string) error {
+	if !Contains(GetSupportedCryptoMultichain(), crypto) {
+		return c.err1(ErrSCG)
+	}
+
+	return nil
+}
+
 // ValidateHashEth validate Ethereum hash.
 func (c *Client) ValidateHashEth(hash string) error {
 	r, _ := regexp.Compile(Hash)
