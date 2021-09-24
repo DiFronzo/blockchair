@@ -322,15 +322,21 @@ func (c *Client) GetMutlichainAddressCheck(mutliAddress MutliAddress) (resp *Dat
 }
 
 // GetMutlichainAddressCheckAdv check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio with options.
-// TODO! CHECK THAT ONLY 1 OR NON ETH ADDR. IS ADDED. ALLOW USAGE OF "?transaction_details=true".
 func (c *Client) GetMutlichainAddressCheckAdv(mutliAddress MutliAddress, options map[string]string) (resp *DataMultichain, e error) {
 	if len(mutliAddress) > 100 { // max 100 addresses
 		return nil, c.err1(ErrMAX)
 	}
+	ethCount := 0
 	var formatMultiAddr []string
 	for j := range mutliAddress {
 		if e = c.ValidateCryptoMultichain(mutliAddress[j].currency); e != nil {
 			return
+		}
+		if mutliAddress[j].currency == "ethereum" {
+			ethCount++
+			if ethCount > 1 {
+				return nil, c.err1(ErrETH)
+			}
 		}
 		formatMultiAddr = append(formatMultiAddr, mutliAddress[j].currency+":"+mutliAddress[j].address)
 	}

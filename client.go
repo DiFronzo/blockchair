@@ -31,6 +31,7 @@ var (
 	ErrRPE = errors.New("blockchair: response parsing error")
 	ErrIRS = errors.New("blockchair: incorrect response status")
 	ErrMAX = errors.New("blockchair: the maximum number of addresses is 100")
+	ErrETH = errors.New("blockchair: can only handle one Ethereum cryptocurrency address")
 )
 
 // GetSupportedCrypto List of supported Bitcoin-like crypto.
