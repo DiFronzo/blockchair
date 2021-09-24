@@ -15,5 +15,13 @@ staticcheck: ## Runs static analysis to prevend bugs, foster code simplicity, pe
 	go install honnef.co/go/tools/cmd/staticcheck@latest
 	staticcheck .
 
+.PHONY: lint
+lint: ## Runs golint (to check for go coding guidelines).
+	golint .
+
+.PHONY: version
+version: ## Runs go version (to check for go verion used).
+	@go version
+
 .PHONY: all
-all: test vet fmt staticcheck ## Runs all source code quality targets (like test, vet, fmt, staticcheck)
+all: test vet fmt staticcheck lint ## Runs all source code quality targets (like test, vet, fmt, staticcheck)

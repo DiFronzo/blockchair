@@ -83,6 +83,52 @@ func TestGetAddressEth(t *testing.T) {
 	}
 }
 
+func TestGetMutlichainAddressCheck(t *testing.T) {
+	tests := MutliAddress{
+		{"ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d"},
+		{"bitcoin", "1JADsmDFX9d2TXis63S9F9L8eDAXwJmnWE"},
+		{"litecoin", "LNAifc8nfjtDJ8azRPiancbZSBftPzhfzb"},
+	}
+	t.Run("test of Ethereum, Bitcoin and Litecoin", func(t *testing.T) {
+		cl := New()
+		cl.APIKey = clientID
+		_, e := cl.GetMutlichainAddressCheck(tests)
+		if e != nil {
+			t.Fatal(e)
+		}
+	})
+}
+
+func TestGetMutlichainAddressCheckErrETH(t *testing.T) {
+	tests := MutliAddress{
+		{"ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d"},
+		{"ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d"},
+		{"litecoin", "LNAifc8nfjtDJ8azRPiancbZSBftPzhfzb"},
+	}
+	t.Run("test of Ethereum, Ethereum and Litecoin", func(t *testing.T) {
+		cl := New()
+		cl.APIKey = clientID
+		if _, e := cl.GetMutlichainAddressCheck(tests); e.Error() != ErrETH.Error() {
+			t.Fatal("incorrect error: " + e.Error())
+		}
+	})
+}
+
+func TestGetMutlichainAddressCheckTransactionDetails(t *testing.T) {
+	tests := MutliAddress{
+		{"ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d"},
+		{"bitcoin", "1JADsmDFX9d2TXis63S9F9L8eDAXwJmnWE"},
+	}
+	t.Run("test of Ethereum adn Bitcoin with option transaction_details", func(t *testing.T) {
+		cl := New()
+		cl.APIKey = clientID
+		_, e := cl.GetMutlichainAddressCheckAdv(tests, map[string]string{"transaction_details": "true"})
+		if e != nil {
+			t.Fatal(e)
+		}
+	})
+}
+
 func BenchmarkGetAddressUnmarshal(b *testing.B) {
 	cl := New()
 	cl.APIKey = clientID

@@ -1,6 +1,7 @@
 package blockchair
 
 import (
+	"encoding/json"
 	"strings"
 )
 
@@ -14,6 +15,12 @@ type DataAddress struct {
 type DataAddressEth struct {
 	Data    map[string]AddressInfoEth `json:"data"`
 	Context ContextAddress            `json:"context"`
+}
+
+// DataMultichain includes full server response to multichain address check request.
+type DataMultichain struct {
+	Data    MultichainInfo `json:"data"`
+	Context Context        `json:"context"`
 }
 
 // DataAddresses includes full server response to addresses request.
@@ -34,6 +41,13 @@ type XpubInfo struct {
 	Addresses    map[string]Address `json:"addresses"`
 	Transactions []string           `json:"transactions"`
 	Utxo         []Utxo             `json:"utxo"`
+}
+
+// MultichainInfo describes the outer structure of the multichain address check.
+type MultichainInfo struct {
+	Set          SetMultichain                `json:"set"`
+	Addresses    map[string]MultichainAddress `json:"addresses"`
+	Transactions []TransactionsMultichain     `json:"transactions"`
 }
 
 // Xpub describes the inner structure of the x/z/v-pub.
@@ -70,11 +84,23 @@ type AddressInfoEth struct {
 type Set struct {
 	AddressCount       int     `json:"address_count"`
 	Balance            int64   `json:"balance"`
-	BalanceUsd         float64 `json:"balance_usd"`
+	BalanceUsd         float32 `json:"balance_usd"`
 	Received           int64   `json:"received"`
 	Spent              int     `json:"spent"`
 	OutputCount        int     `json:"output_count"`
 	UnspentOutputCount int     `json:"unspent_output_count"`
+	FirstSeenReceiving string  `json:"first_seen_receiving"`
+	LastSeenReceiving  string  `json:"last_seen_receiving"`
+	FirstSeenSpending  string  `json:"first_seen_spending"`
+	LastSeenSpending   string  `json:"last_seen_spending"`
+	TransactionCount   int     `json:"transaction_count"`
+}
+
+// SetMultichain the structure of the set for the multichain address check.
+type SetMultichain struct {
+	AddressCount       int     `json:"address_count"`
+	BalanceUsd         float32 `json:"balance_usd"`
+	ReceivedUsd        float32 `json:"received_usd"`
 	FirstSeenReceiving string  `json:"first_seen_receiving"`
 	LastSeenReceiving  string  `json:"last_seen_receiving"`
 	FirstSeenSpending  string  `json:"first_seen_spending"`
@@ -109,8 +135,8 @@ type AddressEth struct {
 	TransactionCount    int     `json:"transaction_count"`
 	FirstSeenReceiving  string  `json:"first_seen_receiving"`
 	LastSeenReceiving   string  `json:"last_seen_receiving"`
-	FirstSeenSpending   string  `json:"first_seen_spending"`
-	LastSeenSpending    string  `json:"last_seen_spending"`
+	FirstSeenSpending   string  `json:"first_seen_spending,omitempty"`
+	LastSeenSpending    string  `json:"last_seen_spending,omitempty"`
 	Nonce               int     `json:"nonce,omitempty"`
 }
 
@@ -156,8 +182,50 @@ type CallsAddress struct {
 	Transferred     bool    `json:"transferred"`
 }
 
-// ContextAddress TODO! FIX "CHECKED" INTO A SLICE
-// the structure of context for address(es).
+// MultichainAddress is the structures of multichain address for Bitcoin-like and Ethereum.
+type MultichainAddress struct {
+	Chain               string      `json:"chain"`
+	Address             string      `json:"address"`
+	Type                string      `json:"type"`
+	ScriptHex           string      `json:"script_hex,omitempty"`
+	ContractCodeHex     string      `json:"contract_code_hex,omitempty"`
+	ContractCreated     string      `json:"contract_created,omitempty"`
+	ContractDestroyed   string      `json:"contract_destroyed,omitempty"`
+	Balance             json.Number `json:"balance"` //int64 for Bitcoin-like and string for Ethereum TODO!
+	BalanceUsd          float32     `json:"balance_usd"`
+	Received            float32     `json:"received,omitempty"`
+	ReceivedApproximate string      `json:"received_approximate,omitempty"`
+	ReceivedUsd         float32     `json:"received_usd"`
+	Spent               float32     `json:"spent,omitempty"`
+	SpentApproximate    string      `json:"spent_approximate,omitempty"`
+	SpentUsd            float32     `json:"spent_usd"`
+	OutputCount         int         `json:"output_count,omitempty"`
+	UnspentOutputCount  int         `json:"unspent_output_count,omitempty"`
+	FeesApproximate     string      `json:"fees_approximate,omitempty"`
+	FeesUsd             float32     `json:"fees_usd,omitempty"`
+	ReceivingCallCount  int         `json:"receiving_call_count,omitempty"`
+	SpendingCallCount   int         `json:"spending_call_count,omitempty"`
+	CallCount           int         `json:"call_count,omitempty"`
+	TransactionCount    int         `json:"transaction_count,omitempty"`
+	FirstSeenReceiving  string      `json:"first_seen_receiving"`
+	LastSeenReceiving   string      `json:"last_seen_receiving"`
+	FirstSeenSpending   string      `json:"first_seen_spending,omitempty"`
+	LastSeenSpending    string      `json:"last_seen_spending,omitempty"`
+	Nonce               int         `json:"nonce,omitempty"`
+}
+
+// TransactionsMultichain is the structure of one specific transaction.
+type TransactionsMultichain struct {
+	Chain         string  `json:"chain"`
+	Address       string  `json:"address"`
+	BlockID       int32   `json:"block_id"`
+	Hash          string  `json:"hash"`
+	Time          string  `json:"time"`
+	BalanceChange float32 `json:"balance_change"`
+}
+
+// ContextAddress the structure of context for address(es).
+// TODO! FIX "CHECKED" INTO A SLICE
 type ContextAddress struct {
 	Code           int      `json:"code"`
 	Source         string   `json:"source"`
@@ -240,5 +308,40 @@ func (c *Client) GetAddressEthAdv(crypto string, address string, options map[str
 
 	resp = &DataAddressEth{}
 	var path = crypto + "/dashboards/address/" + address
+	return resp, c.LoadResponse(path, resp, options)
+}
+
+// MutliAddress struct for usage with GetMutlichainAddressCheck(Adv), sends type of crypto and address.
+type MutliAddress []struct {
+	currency, address string
+}
+
+// GetMutlichainAddressCheck check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio.
+func (c *Client) GetMutlichainAddressCheck(mutliAddress MutliAddress) (resp *DataMultichain, e error) {
+	return c.GetMutlichainAddressCheckAdv(mutliAddress, nil)
+}
+
+// GetMutlichainAddressCheckAdv check multiple addresses from different blockchain via just one request. This can be useful if you're monitoring your own wallet or portfolio with options.
+func (c *Client) GetMutlichainAddressCheckAdv(mutliAddress MutliAddress, options map[string]string) (resp *DataMultichain, e error) {
+	if len(mutliAddress) >= 100 { // max 100 addresses
+		return nil, c.err1(ErrMAX)
+	}
+	ethCount := 0
+	var formatMultiAddr []string
+	for j := range mutliAddress {
+		if e = c.ValidateCryptoMultichain(mutliAddress[j].currency); e != nil {
+			return
+		}
+		if mutliAddress[j].currency == "ethereum" {
+			ethCount++
+			if ethCount > 1 {
+				return nil, c.err1(ErrETH)
+			}
+		}
+		formatMultiAddr = append(formatMultiAddr, mutliAddress[j].currency+":"+mutliAddress[j].address)
+	}
+
+	resp = &DataMultichain{}
+	var path = "multi/dashboards/addresses/" + strings.Join(formatMultiAddr, ",")
 	return resp, c.LoadResponse(path, resp, options)
 }
