@@ -119,7 +119,7 @@ func TestGetMutlichainAddressCheckTransactionDetails(t *testing.T) {
 		{"ethereum", "0x3282791d6fd713f1e94f4bfd565eaa78b3a0599d"},
 		{"bitcoin", "1JADsmDFX9d2TXis63S9F9L8eDAXwJmnWE"},
 	}
-	t.Run("test of Ethereum adn Bitcoin with option transaction_details", func(t *testing.T) {
+	t.Run("test of Ethereum and Bitcoin with option transaction_details", func(t *testing.T) {
 		cl := New()
 		cl.APIKey = clientID
 		_, e := cl.GetMutlichainAddressCheckAdv(tests, map[string]string{"transaction_details": "true"})
