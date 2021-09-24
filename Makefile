@@ -17,6 +17,7 @@ staticcheck: ## Runs static analysis to prevend bugs, foster code simplicity, pe
 
 .PHONY: lint
 lint: ## Runs golint (to check for go coding guidelines).
+	go install golang.org/x/lint/golint@latest
 	golint .
 
 .PHONY: version
