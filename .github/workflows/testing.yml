@@ -45,3 +45,6 @@ jobs:
 
       - name: Run Unit tests.
         run: make test
+
+      - name: Run golint
+        run: make lint
