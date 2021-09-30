@@ -3,20 +3,22 @@ package blockchair
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
-// Hash used to verify Ethereum hash.
 const (
-	apiRoot   = "https://api.blockchair.com/"
-	Hash      = "^0x[0-9a-f]{64}$"
-	UserAgent = "blockchair-api-golang-v1"
+	clientVersion = "0.1.3"
+	apiRoot       = "https://api.blockchair.com/"
+	// Hash used to verify Ethereum hash. TODO: Replace with Deterministic Finite Automaton
+	Hash = "^0x[0-9a-f]{64}$"
+	// UserAgent request header that lets servers and network peers identify the application of the requesting user agent.
+	UserAgent = "blockchair-api-golang-" + clientVersion
 )
 
 // Errors it is a set of errors returned when working with the package.
@@ -30,6 +32,7 @@ var (
 	ErrCRR = errors.New("blockchair: could not read answer response")
 	ErrRPE = errors.New("blockchair: response parsing error")
 	ErrIRS = errors.New("blockchair: incorrect response status")
+	ErrRLR = errors.New("blockchair: error 402, rate limit reached for free tier")
 	ErrMAX = errors.New("blockchair: the maximum number of addresses is 100")
 	ErrETH = errors.New("blockchair: can only handle one Ethereum cryptocurrency address")
 )
@@ -55,6 +58,8 @@ type Client struct {
 
 	APIKey    string // API access key.
 	UserAgent string // Optional additional User-Agent fragment.
+
+	RateLimitFunc func(RateLimit) // Func to call after response is returned in LoadResponse.
 }
 
 func (c *Client) userAgent() string {
@@ -64,6 +69,81 @@ func (c *Client) userAgent() string {
 	}
 
 	return UserAgent + " " + c.UserAgent
+}
+
+// SetRateLimitFunc sets a Client instances' RateLimitFunc.
+func SetRateLimitFunc(ratefunc func(rl RateLimit)) func(*Client) {
+	return func(c *Client) { c.RateLimitFunc = ratefunc }
+}
+
+// RateLimitFunc is rate limiting strategy for the Client instance.
+type RateLimitFunc func(RateLimit)
+
+// RateLimit store values from calling Premium API.
+type RateLimit struct {
+	Limit     int
+	Remaining int
+	Period    int
+}
+
+var defaultRateLimitFunc = func(rl RateLimit) {}
+
+// PercentageLeft returns the ratio of Remaining to Limit as a percentage
+func (rl RateLimit) PercentageLeft() int {
+	return rl.Remaining * 100 / rl.Limit
+}
+
+// WaitTime returns the time.Duration ratio of Period to Limit
+func (rl RateLimit) WaitTime() time.Duration {
+	return (time.Second * time.Duration(rl.Period)) / time.Duration(rl.Limit)
+}
+
+// WaitTimeRemaining returns the time.Duration ratio of Period to Remaining
+func (rl RateLimit) WaitTimeRemaining() time.Duration {
+	if rl.Remaining < 2 {
+		return time.Second * time.Duration(rl.Period)
+	}
+	return (time.Second * time.Duration(rl.Period)) / time.Duration(rl.Remaining)
+}
+
+// RateLimitStrategySleep sets RateLimitFunc to sleep by WaitTimeRemaining
+func (c *Client) RateLimitStrategySleep() {
+	c.RateLimitFunc = func(rl RateLimit) {
+		remaining := rl.WaitTimeRemaining()
+		time.Sleep(remaining)
+	}
+}
+
+// RateLimitStrategyConcurrent sleeps for WaitTime * parallelism when
+// remaining is less than or equal to parallelism.
+func (c *Client) RateLimitStrategyConcurrent(parallelism int) {
+	c.RateLimitFunc = func(rl RateLimit) {
+		if rl.Remaining <= parallelism {
+			wait := rl.WaitTime() * time.Duration(parallelism)
+			time.Sleep(wait)
+		}
+	}
+}
+
+var countRemaining = 30
+
+// parseRate parses rate related headers from http response.
+func parseRate(apikey string) RateLimit {
+	var rlVal RateLimit
+	// TODO: make it more useful, Blockchair has no rate limit in headers
+	// for users with API key we can call the Premium API
+	if apikey != "" {
+		rlVal.Limit = 1
+		rlVal.Remaining = 1
+		rlVal.Period = 5
+	} else {
+		countRemaining = countRemaining - 1
+		rlVal.Limit = 30
+		rlVal.Remaining = countRemaining
+		rlVal.Period = 1800
+	}
+
+	return rlVal
 }
 
 // LoadResponse to send a client request, which is then converted to the passed type.
@@ -89,7 +169,7 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 	if e != nil {
 		return c.err2(ErrCGD, e)
 	}
-	// fmt.Println("querying..." + fullPath)
+
 	req.Header.Set("User-Agent", c.userAgent())
 
 	resp, e := c.client.Do(req)
@@ -104,19 +184,23 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 		}
 	}(resp.Body)
 
+	rl := parseRate(c.APIKey)
+	c.RateLimitFunc(rl)
+
 	b, e := ioutil.ReadAll(resp.Body)
 	if e != nil {
 		return c.err3(ErrCRR, e, resp)
 	}
 
 	if resp.Status[0] != '2' {
+		if resp.Status == "402 Payment Required" {
+			return c.err3(ErrRLR, e, resp)
+		}
 		return c.err3(ErrIRS, e, resp)
-		//return fmt.Errorf("expected status 2xx, got %s: %s", resp.Status, string(b))
 	}
 
 	if err := json.Unmarshal(b, &i); err != nil {
-		fmt.Println(err)
-		return c.err3(ErrRPE, e, resp)
+		return c.err3(ErrRPE, err, resp)
 	}
 
 	return nil
@@ -124,7 +208,7 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 
 // New creates a new client instance the network internet.
 func New() *Client {
-	return &Client{client: &http.Client{}}
+	return &Client{client: &http.Client{}, RateLimitFunc: defaultRateLimitFunc}
 }
 
 // SetClient http client setter.

@@ -4,7 +4,7 @@ These are recommendations for pull requests.
 They are strictly guidelines to help manage expectations.
 
 ##### PR preparation
-Run `make all` from the root of the repository to run formatting, linting and tests.
+Run `make all` from the root of the repository to run formatting, linting and tests. To run all tests require an API key.
 
 ##### Should this be an issue instead
 - [ ] is it a convenience method? (no new functionality, streamlines some use case)
