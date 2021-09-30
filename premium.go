@@ -2,7 +2,7 @@ package blockchair
 
 // DataPremium includes full server response to premium stats request.
 type DataPremium struct {
-	Data    Premium        `json:"data"`
+	Data    Premium        `json:"data,omitempty"`
 	Context ContextPremium `json:"context"`
 }
 
