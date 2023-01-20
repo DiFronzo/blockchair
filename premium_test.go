@@ -1,6 +1,8 @@
 package blockchair
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestClient_GetUsage(t *testing.T) {
 	cl := New()

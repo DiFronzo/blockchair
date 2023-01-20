@@ -8,9 +8,11 @@
 
 ## ⚡️ Quick start
 
-First of all, [download](https://golang.org/) and install **GO**. Version `1.17` or higher is required.
+First of all, [download](https://golang.org/) and install **GO**. Version `1.17`
+or higher is required.
 
-Verify that the installation was successful by running the following command that should return the version number for GO.
+Verify that the installation was successful by running the following command
+that should return the version number for GO.
 
 ```bash
 go version
@@ -26,19 +28,26 @@ That's all you need to know to start! 🎉
 
 ## ⚙️ Usage & Options
 
-For full documentation see [Gitbook](https://blockchair.vfiles.no/), also a big thanks to Gitbook for supporting the project.
+For full documentation see [Gitbook](https://blockchair.vfiles.no/), also a big
+thanks to Gitbook for supporting the project.
 
-For an example of usage see [here](https://github.com/DiFronzo/blockchair/blob/main/example/main.go).
-	
+For an example of usage see
+[here](https://github.com/DiFronzo/blockchair/blob/main/example/main.go).
+
 ### 🐳 Docker-way to quick start
 
 UNDER CONSTRUCTION.
 
 ## ⭐️ Project assistance
 
-If you want to say **thank you** or/and support active development of `blockchair`:
+If you want to say **thank you** or/and support active development of
+`blockchair`:
 
 - Add a [GitHub Star](https://github.com/DiFronzo/blockchair) to the project.
 
 ## ⚠️ License
-`Blockchair` is free and open-source software licensed under the [MIT](https://github.com/DiFronzo/blockchair/blob/main/LICENSE). This is not an official release from [Blockchair](https://github.com/Blockchair). Use on your own risk.
+
+`Blockchair` is free and open-source software licensed under the
+[MIT](https://github.com/DiFronzo/blockchair/blob/main/LICENSE). This is not an
+official release from [Blockchair](https://github.com/Blockchair). Use on your
+own risk.
