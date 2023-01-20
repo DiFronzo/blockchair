@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"net/url"
@@ -29,7 +28,6 @@ var (
 	ErrSCE = errors.New("blockchair: the Ethereum cryptocurrency is not supported")
 	ErrSCG = errors.New("blockchair: the cryptocurrency is not supported")
 	ErrCGD = errors.New("blockchair: cannot get data on url")
-	ErrCRR = errors.New("blockchair: could not read answer response")
 	ErrRPE = errors.New("blockchair: response parsing error")
 	ErrIRS = errors.New("blockchair: incorrect response status")
 	ErrRLR = errors.New("blockchair: error 402, rate limit reached for free tier")
@@ -39,7 +37,7 @@ var (
 
 // GetSupportedCrypto List of supported Bitcoin-like crypto.
 func GetSupportedCrypto() []string {
-	return []string{"bitcoin", "bitcoin-cash", "litecoin", "bitcoin-sv", "dogecoin", "dash", "groestlcoin", "zcash", "ecash", "bitcoin/testnet"}
+	return []string{"bitcoin", "bitcoin-cash", "litecoin", "dogecoin", "dash", "groestlcoin", "zcash", "ecash", "bitcoin/testnet"}
 }
 
 // GetSupportedCryptoEth List of supported Ethereum crypto.
@@ -49,7 +47,7 @@ func GetSupportedCryptoEth() []string {
 
 // GetSupportedCryptoMultichain List of supported crypto for multichain address check.
 func GetSupportedCryptoMultichain() []string {
-	return []string{"bitcoin", "bitcoin-cash", "litecoin", "bitcoin-sv", "dash", "groestlcoin", "zcash", "ethereum"}
+	return []string{"bitcoin", "bitcoin-cash", "litecoin", "dash", "groestlcoin", "zcash", "ethereum"}
 }
 
 // Client specifies the mechanism by which individual API requests are made.
@@ -140,7 +138,7 @@ func parseRate(apikey string) RateLimit {
 		countRemaining = countRemaining - 1
 		rlVal.Limit = 30
 		rlVal.Remaining = countRemaining
-		rlVal.Period = 1800
+		rlVal.Period = 30
 	}
 
 	return rlVal
@@ -172,7 +170,9 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 
 	req.Header.Set("User-Agent", c.userAgent())
 
+	// fmt.Println("Querry... ", fullPath)
 	resp, e := c.client.Do(req)
+
 	if e != nil {
 		return c.err3(ErrCGD, e, resp)
 	}
@@ -187,9 +187,9 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 	rl := parseRate(c.APIKey)
 	c.RateLimitFunc(rl)
 
-	b, e := ioutil.ReadAll(resp.Body)
-	if e != nil {
-		return c.err3(ErrCRR, e, resp)
+	err := json.NewDecoder(resp.Body).Decode(&i)
+	if err != nil {
+		return c.err3(ErrRPE, err, resp)
 	}
 
 	if resp.Status[0] != '2' {
@@ -199,12 +199,33 @@ func (c *Client) LoadResponse(path string, i interface{}, options map[string]str
 		return c.err3(ErrIRS, e, resp)
 	}
 
-	if err := json.Unmarshal(b, &i); err != nil {
-		return c.err3(ErrRPE, err, resp)
-	}
-
 	return nil
 }
+
+// formatRateReset formats d to look like "[rate reset in 2s]" or
+// "[rate reset in 87m02s]" for the positive durations. And like "[rate limit was reset 87m02s ago]"
+// for the negative cases.
+// func formatRateReset(d time.Duration) string {
+//	isNegative := d < 0
+//	if isNegative {
+//		d *= -1
+//	}
+//	secondsTotal := int(0.5 + d.Seconds())
+//	minutes := secondsTotal / 60
+//	seconds := secondsTotal - minutes*60
+
+//	var timeString string
+//	if minutes > 0 {
+//		timeString = fmt.Sprintf("%dm%02ds", minutes, seconds)
+//	} else {
+//		timeString = fmt.Sprintf("%ds", seconds)
+//	}
+
+//	if isNegative {
+//		return fmt.Sprintf("[rate limit was reset %v ago]", timeString)
+//	}
+//	return fmt.Sprintf("[rate reset in %v]", timeString)
+// }
 
 // New creates a new client instance the network internet.
 func New() *Client {

@@ -16,8 +16,9 @@ func TestGetTransaction(t *testing.T) {
 		{"bitcoin-cash", "96fb4ea992bd6bf086d7ac8cee07ee6c261aaf65570b6bc64288b57debd0e13c"},
 		{"litecoin", "dc4b9ce0713971202270ae8240ec206f34d1289dfba5b96dcf12bb98c4dc96d1"},
 		{"litecoin", "5e8ccf8c5869e66d498c348aabeb564d330e846a806acbea00715e9005b3fc8d"},
-		{"bitcoin-sv", "1fcb691ace1894b7f1dd556b0ba3070bd6b799795a2192d0dc22ec223c945b9a"},
-		{"bitcoin-sv", "124ce1001e77bceabeb098fce32c27bc41b9ee9b6723a445ecddf8927549641b"},
+		// November 7th, 2022 public support for bitcoin-sv was dropped
+		// {"bitcoin-sv", "1fcb691ace1894b7f1dd556b0ba3070bd6b799795a2192d0dc22ec223c945b9a"},
+		// {"bitcoin-sv", "124ce1001e77bceabeb098fce32c27bc41b9ee9b6723a445ecddf8927549641b"},
 		{"dogecoin", "863556186e0b0687a5ab329927fbd40bb558b3e232b9d80616d406da91e53822"},
 		{"dogecoin", "0696eecd9f12940b08e9ac565fcdd7a58c513043457c51652bdbd051f30a45cb"},
 		{"dash", "b1624961540cc2317bbd4b2e1ec01f3e80f5c06ca76cacdebd99a3eeae76f63a"},

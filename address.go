@@ -122,13 +122,13 @@ type AddressEth struct {
 	ContractCreated     string  `json:"contract_created,omitempty"`
 	ContractDestroyed   string  `json:"contract_destroyed,omitempty"`
 	Balance             string  `json:"balance"`
-	BalanceUsd          float32 `json:"balance_usd"`
+	BalanceUsd          float64 `json:"balance_usd"` //maybe 32?
 	ReceivedApproximate string  `json:"received_approximate"`
-	ReceivedUsd         float32 `json:"received_usd"`
+	ReceivedUsd         float64 `json:"received_usd"`
 	SpentApproximate    string  `json:"spent_approximate"`
-	SpentUsd            float32 `json:"spent_usd"`
+	SpentUsd            float64 `json:"spent_usd"`
 	FeesApproximate     string  `json:"fees_approximate"`
-	FeesUsd             float32 `json:"fees_usd"`
+	FeesUsd             float64 `json:"fees_usd"`
 	ReceivingCallCount  int     `json:"receiving_call_count"`
 	SpendingCallCount   int     `json:"spending_call_count"`
 	CallCount           int     `json:"call_count"`
@@ -237,7 +237,7 @@ type ContextAddress struct {
 	MarketPriceUsd float32  `json:"market_price_usd"`
 	Cache          *Cache   `json:"cache"`
 	API            *API     `json:"api"`
-	Server         string   `json:"server"`
+	Servers        string   `json:"servers"`
 	Time           float32  `json:"time"`
 	RenderTime     float32  `json:"render_time"`
 	FullTime       float32  `json:"full_time"`
