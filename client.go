@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	clientVersion = "0.1.3"
+	clientVersion = "0.1.4"
 	apiRoot       = "https://api.blockchair.com/"
 	// Hash used to verify Ethereum hash. TODO: Replace with Deterministic Finite Automaton
 	Hash = "^0x[0-9a-f]{64}$"
